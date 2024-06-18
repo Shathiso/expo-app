@@ -11,11 +11,11 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors['light'].tint,
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
@@ -24,11 +24,30 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="applications"
         options={{
-          title: 'Explore',
+          title: 'Applications',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'create' : 'create-outline'} color={color} />
+          ),
+        }}
+      />
+        <Tabs.Screen
+        name="maintenance"
+        options={{
+          title: 'Maintenance',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'cog' : 'cog-outline'} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="information"
+        options={{
+          title: 'Information',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'information' : 'information-outline'} color={color} />
           ),
         }}
       />
