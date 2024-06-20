@@ -1,33 +1,41 @@
 import { StatusBar } from "expo-status-bar";
-import { Redirect, router, useRootNavigationState } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { Image, StyleSheet, Platform, View, Text } from 'react-native';
-import { useSelector, useDispatch} from 'react-redux';
-import { useEffect  } from "react";
+import { useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLoading } from "@/store/store-slices/userSlice";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '@/components/CustomButton';
 import LogoHeader from "@/components/LogoHeader";
+import { State } from "@/typescript_types/types";
+import DropDown from "@/components/DropDown";
 
-import { State } from '../../typescript_types/types'
-import { setIsLoading } from "@/store/store-slices/userSlice";
-
-export default function HomeScreen() {
+export default function Welcome() {
 
   const dispatch = useDispatch();
-
-  /*useEffect(() => {
-    dispatch(setIsLoading(false));
-  }, []);*/
-
+  const loading = useSelector((state:State) => state.userDetails.isLoading)
   const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
-  const currentUser = useSelector((state:State) => state.userDetails.user)
 
+
+  if (!loading && isLoggedIn) return <Redirect href="/home" />;
+
+  const [signUpLoading,setSignUpLoading] = useState(false);
+  const [loginLoading,setLoginLoading] = useState(false);
+  const [age,setAge] = useState('');
+
+  const testDropDown = ['test','test1'];
   
+  const login = () => {
+    router.push('/login')
+  }
+
+  const signUp = () => {
+    router.push('/sign-up')
+  }
   return (
     <SafeAreaView style={styles.container}>
-      <LogoHeader  />
+      <LogoHeader />
       
       <View style={styles.mainImageContainer}>
         <Image
@@ -37,13 +45,19 @@ export default function HomeScreen() {
           />
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Hello {currentUser.username}!</Text>
+        <Text style={styles.title}>Welcome!</Text>
         <Text>
           Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
         </Text>
         <Text>
           Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
         </Text>
+
+        
+      </View>
+      <View style={styles.contentContainer}>
+          <CustomButton type="primary" handlePress={signUp} isLoading={loginLoading} title="Sign Up"/>
+          <CustomButton type="primary" handlePress={login} isLoading={signUpLoading} title="Login"/>
       </View>
       <StatusBar backgroundColor="#161622" style="dark" />
     </SafeAreaView>

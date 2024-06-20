@@ -35,13 +35,14 @@ const databases = new Databases(client);
 // Register User
 export const registerUser =  async (form) => {
     try {
-        await account.create(ID.unique(), form.email, form.password, form.username)
+        const newAccount = await account.create(ID.unique(), form.email, form.password, form.username)
         if (!newAccount) throw Error;
 
         const avatarUrl = avatars.getInitials(form.username);
 
         await signIn(form.email, form.password);
 
+        const user = '';
         const newUser = await databases.createDocument(
         config.databaseId,
         config.userCollectionId,
@@ -53,8 +54,14 @@ export const registerUser =  async (form) => {
             avatar: avatarUrl,
         }
         );
+/*
+        newUser.then(function (response) {
+          user = response;
+      }, function (error) {
+          console.log(error);
+      });*/
 
-        return newUser;
+      return newUser;
         
     } catch (error) {
         console.log(error)
@@ -62,9 +69,46 @@ export const registerUser =  async (form) => {
     }
 }
 
+// Register User
+export const submitHouseApplication =  async (form) => {
+  try {
+      const newAccount = await account.create(ID.unique(), form.email, form.password, form.username)
+      if (!newAccount) throw Error;
+
+      const avatarUrl = avatars.getInitials(form.username);
+
+      await signIn(form.email, form.password);
+
+      const user = '';
+      const newUser = await databases.createDocument(
+      config.databaseId,
+      config.userCollectionId,
+      ID.unique(),
+      {
+          accountId: newAccount.$id,
+          email: form.email,
+          username: form.username,
+          avatar: avatarUrl,
+      }
+      );
+/*
+      newUser.then(function (response) {
+        user = response;
+    }, function (error) {
+        console.log(error);
+    });*/
+
+    return newUser;
+      
+  } catch (error) {
+      console.log(error)
+      throw new Error(error)
+  }
+}
+
 export async function signIn(email, password) {
     try {
-      const session = await account.createEmailSession(email, password);
+      const session = await account.createEmailPasswordSession(email, password);
   
       return session;
     } catch (error) {
@@ -87,6 +131,7 @@ export async function getAccount() {
 export async function getCurrentUser() {
     try {
       const currentAccount = await getAccount();
+      console.log(currentAccount);
       if (!currentAccount) throw Error;
   
       const currentUser = await databases.listDocuments(

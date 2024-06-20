@@ -1,5 +1,7 @@
-import { Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
 import React from 'react'
+
+import { FontAwesome } from '@expo/vector-icons';
 
 interface props{
     title:string
@@ -15,14 +17,25 @@ const CustomButton = ({title, isLoading, type, handlePress}:props) => {
         style={ isLoading ? styles[`${type}Loading`] : styles[type]}
         disabled={isLoading}
     >
+        <View style={styles.buttonTextWrapper} >
        <Text style={styles.text} >{title}</Text>
+       {(type == 'signout') && <FontAwesome name="sign-out" size={24} color="#ad2524" />}
+       </View>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
     text:{
-        textAlign:'center'
+        fontFamily:'Poppins-Medium',
+        textAlign:'center',
+        marginRight:5,
+        marginTop:3.5
+    },
+    buttonTextWrapper:{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'center',
     },
     primary:{
         backgroundColor: '#faa21b',
@@ -47,6 +60,12 @@ const styles = StyleSheet.create({
         minHeight: 52,
         borderRadius: 12,
         marginTop:30
+    },
+    signout:{
+        marginTop:20,
+        marginRight:10,
+        borderRadius: 8,
+        width: 100
     }
 
 });

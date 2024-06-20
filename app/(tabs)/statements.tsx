@@ -7,14 +7,32 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-export default function Information() {
+export default function Statements() {
 
+  /*
+      list of payments, ( ToDo List )
+      pay option, which should update the total seen on the page and deduct from the total
+      Make Payment Button, which triggers a modal to pay, when they pay, the total reduces, and an entry is inserted into the list
+      Total : 8000 00
+
+      Payments
+      ####
+      ####
+      ####
+                         Total: #####
+                         Pay Now : (Button)
+
+      Payments database,
+      Type: application admin fee || rental/property,
+      download pdf of statement option
+
+  */
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
       headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Information</ThemedText>
+        <ThemedText type="title">Statements</ThemedText>
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
       <Collapsible title="File-based routing">

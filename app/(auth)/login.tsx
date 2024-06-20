@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native'
 import FormField from "@/components/FormField";
 import React from 'react'
 import CustomButton from "@/components/CustomButton";
 import LogoHeader from "@/components/LogoHeader";
+
+import { useDispatch } from "react-redux";
+import { setIsLoggedIn, setUser, setIsLoading } from "@/store/store-slices/userSlice";
+
+import { getCurrentUser, signIn } from "@/server/appWriteConfig";
 
 
 const login = () => {
@@ -14,10 +19,33 @@ const login = () => {
     email: "",
     password: "",
   });
-  const [loginLoading, setLoginLoading]= useState(false)
+  const [loginLoading, setLoginLoading]= useState(false);
+  const dispatch = useDispatch();
 
-  const submitForm = () => {
+  const submitForm = async () => {
+    if (form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
+      setLoginLoading(false);
+    }
 
+
+    try {
+      const signUp = await signIn(form.email, form.password);
+
+      const result = await getCurrentUser();
+      dispatch(setIsLoading(true))
+      dispatch(setUser(result));
+      dispatch(setIsLoggedIn(true));
+
+
+      Alert.alert("Success", "User signed in successfully");
+      router.replace("/home");
+      
+    } catch (error:any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      //
+    }
   }
 
   return (

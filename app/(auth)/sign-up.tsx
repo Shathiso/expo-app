@@ -7,6 +7,9 @@ import React from 'react'
 import CustomButton from "@/components/CustomButton";
 import LogoHeader from "@/components/LogoHeader";
 
+import { useDispatch } from "react-redux";
+import { setIsLoggedIn, setUser } from "@/store/store-slices/userSlice";
+
 import { registerUser } from '../../server/appWriteConfig.js'
 
 const signUp = () => {
@@ -16,7 +19,8 @@ const signUp = () => {
     email: "",
     password: "",
   });
-  const [signUpLoading, setSignUpLoading]= useState(false)
+  const [signUpLoading, setSignUpLoading]= useState(false);
+  const dispatch = useDispatch();
 
   const submitForm = async () => {
     setSignUpLoading(true)
@@ -27,14 +31,14 @@ const signUp = () => {
 
     try {
       const result = await registerUser(form);
-      //setUser(result);
-      //setIsLogged(true);
+      dispatch(setUser(result));
+      dispatch(setIsLoggedIn(true));
       router.replace("/home");
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-      setSignUpLoading(false);
+      //setSignUpLoading(false);
       //setSubmitting(false);
     }
   }
