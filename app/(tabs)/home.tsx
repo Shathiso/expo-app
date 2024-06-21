@@ -1,98 +1,102 @@
 import { StatusBar } from "expo-status-bar";
-import { Redirect, router, useRootNavigationState } from "expo-router";
-import { Image, StyleSheet, Platform, View, Text } from 'react-native';
+import { Redirect, router} from "expo-router";
+import { Image, StyleSheet, Platform, View, Text, FlatList, ScrollView } from 'react-native';
 import { useSelector, useDispatch} from 'react-redux';
 import { useEffect  } from "react";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '@/components/CustomButton';
 import LogoHeader from "@/components/LogoHeader";
 
 import { State } from '../../typescript_types/types'
 import { setIsLoading } from "@/store/store-slices/userSlice";
+import { useState } from "react";
+import { getListings } from "@/server/appWriteConfig";
+import ListingItem from "@/components/ListingItem";
+import EmptyState from "@/components/EmptyState";
+
 
 export default function HomeScreen() {
 
   const dispatch = useDispatch();
+  const [listings, setListings] = useState([]);
 
-  /*useEffect(() => {
-    dispatch(setIsLoading(false));
-  }, []);*/
+
+  useEffect(() => {
+    const retrievedListings = getListings();
+    retrievedListings.then((response) => {
+      setListings([...response.documents])
+      console.log('listings',listings)
+
+    })
+  }, []);
 
   const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
   const currentUser = useSelector((state:State) => state.userDetails.user)
 
-  
   return (
-    <SafeAreaView style={styles.container}>
-      <LogoHeader  />
-      
-      <View style={styles.mainImageContainer}>
-        <Image
-            style={styles.mainImage}
-            source={require('@/assets/images/slideshow/slide-1-resized.jpg')}
-            resizeMode='contain'
+    <SafeAreaView style={styles.safeAreaView}>
+      <ScrollView>
+        <LogoHeader  />
+        <View>
+          <FlatList
+          data={listings}
+          keyExtractor={(item) => item.$id}
+          renderItem={({item}) => 
+          <ListingItem 
+            key={item.listingId}
+            description={item.description} 
+            price={item.price}
+            imageUrl={item.image} 
+            bedrooms={item.bedrooms}
+            type={item.propertyType}
+          />}
+          ListHeaderComponent={() => (
+            <View>
+              <View style={styles.titleContainer}>
+                  <Text style={styles.pageTitle}>
+                    Welcome Back
+                  </Text>
+                  <Text style={styles.pageDescription}>
+                    Latest Properties
+                  </Text>
+              </View>
+            </View>
+          )}
+          ListEmptyComponent={() => (
+            <EmptyState title="No Properties Found" subtitle="No properties listed yet" />
+          )}
           />
-      </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Hello {currentUser.username}!</Text>
-        <Text>
-          Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
-        </Text>
-        <Text>
-          Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
-        </Text>
-      </View>
-      <StatusBar backgroundColor="#161622" style="dark" />
+        </View>
+        <StatusBar backgroundColor="#161622" style="dark" />
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1
+  safeAreaView:{
+    height: '100%'
   },
-  logoContainer:{
-    backgroundColor:'white',
-    width: 400,
-    maxHeight:60,
-    height: 60,
-    flex:1
+  pageTitle:{
+    fontFamily:'Poppins-SemiBold',
+    fontSize:24,
+    textAlign:'center'
   },
-  logo:{
-    width:100,
-    height:60
+  titleContainer:{
+    marginTop:12,
+    display:"flex",
+    textAlign:"center",
+    marginBottom:1
   },
-  mainImageContainer:{
-    flex:1,
-    maxHeight:185,
-    marginBottom:50
-  },
-
-  mainImage:{
-    position:'absolute',
-    left:0,
-    top:0,
-    height: 185,
-    width:400
-  },
-  contentContainer:{
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
-  },
-  title:{
-    fontSize:18
-  },
-  text: {
-    fontSize: 28,
-    lineHeight: 32,
-    marginTop: -6,
-  },
+  pageDescription:{
+    fontFamily:'Poppins-Regular',
+    fontSize:14,
+    textAlign:'center',
+    marginTop:10,
+    marginBottom: 16
+  }
  
 });
 

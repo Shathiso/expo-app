@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     paddingLeft:6
   },
   headerTxt: {
-    fontSize: 16,
+    fontSize: 14,
     paddingBottom:4,
     color: '#151E26',
   },
@@ -88,12 +88,12 @@ const styles = StyleSheet.create({
   },
   dropdownButtonTxtStyle: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: '#151E26',
   },
   dropdownButtonArrowStyle: {
-    fontSize: 28,
+    fontSize: 18,
   },
   dropdownButtonIconStyle: {
     fontSize: 28,

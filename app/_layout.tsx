@@ -4,9 +4,11 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { StyleSheet, Text, View } from 'react-native'
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Provider } from 'react-redux';
+import { ToastProvider } from 'react-native-toast-notifications'
 
 import store from '../store/globalStore';
 
@@ -40,15 +42,51 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </ThemeProvider>
+      <ToastProvider
+      placement="top"
+      duration={5000}
+      animationType='slide-in'
+      animationDuration={250}
+      textStyle={{ fontSize: 20 }}
+      offset={50}
+      successColor="green"
+      normalColor="red"
+      offsetTop={30}
+      offsetBottom={40}
+      swipeEnabled={true}
+      renderType={{
+        custom_type: (toast) => (
+          <View style={styles.container}>
+            <Text>{toast.message}</Text>
+          </View>
+        )
+      }}
+      >
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+        </ThemeProvider>
+      </ToastProvider>
     </Provider>
   );
 }
+
+
+const styles = StyleSheet.create({
+  title:{
+
+  },
+  message:{
+
+  },
+  container:{
+      borderRadius:12,
+      backgroundColor:'white',
+      borderLeftColor: ''
+  }
+})

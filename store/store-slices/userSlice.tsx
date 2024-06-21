@@ -4,7 +4,9 @@ import { getCurrentUser } from '../../server/appWriteConfig';
 const initialState = {
     user: {},
     isLoggedIn:false,
-    isLoading:false
+    isLoading:false,
+    applications: [],
+    faults:[]
 };
 
 function getState() {
@@ -41,6 +43,14 @@ export const userSlice = createSlice({
             state.isLoading = action.payload;
         },
 
+        setStoreApplications: (state, action) => {
+            state.applications = action.payload;
+        },
+
+        setStoreFaults: (state, action) => {
+            state.faults = action.payload;
+        },
+
         logOut: (state) => {
             state.isLoading = true;
             state.isLoggedIn = false;
@@ -50,5 +60,5 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setUser, setIsLoggedIn, setIsLoading, logOut } = userSlice.actions
+export const { setUser, setIsLoggedIn, setIsLoading, setStoreApplications, setStoreFaults, logOut } = userSlice.actions
 export default userSlice.reducer

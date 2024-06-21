@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Alert, FlatList } from 'react-native'
 import FormField from "@/components/FormField";
 import React from 'react'
 import CustomButton from "@/components/CustomButton";
@@ -9,9 +9,9 @@ import LogoHeader from "@/components/LogoHeader";
 import DropDown from "@/components/DropDown";
 
 import { useDispatch } from "react-redux";
-import { setIsLoggedIn, setUser } from "@/store/store-slices/userSlice";
-
-import { registerUser } from '../../server/appWriteConfig.js'
+import { setStoreFaults } from "@/store/store-slices/userSlice";
+import ReportItem from "../../components/ReportItem";
+import { submitFault, getFaults } from '../../server/appWriteConfig.js'
 
 const maintenance = () => {
 
@@ -24,6 +24,15 @@ const maintenance = () => {
     description:"",
     picture:''
   });
+  const [faults, setFaults] = useState([]);
+
+  useEffect(() => {
+    const retrievedFaults = getFaults();
+    retrievedFaults.then((response) => {
+      setFaults([faults, ...response.documents])
+      console.log(faults)
+    })
+  }, []);
 
   const typeOfProblemOptions = ['plumbing', 'electrical', 'carpentry'];
 
@@ -38,16 +47,13 @@ const maintenance = () => {
     }
 
     try {
-      const result = await registerUser(form);
-      dispatch(setUser(result));
-      dispatch(setIsLoggedIn(true));
-      router.replace("/home");
+      const result = await submitFault(form);
+      dispatch(setStoreFaults(result));
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-      //setSignUpLoading(false);
-      //setSubmitting(false);
+
     }
   }
 
@@ -55,6 +61,15 @@ const maintenance = () => {
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView>
         <LogoHeader />
+
+        {(faults.length > 0) && <FlatList
+        data={faults}
+        renderItem={({item}) => <ReportItem referenceNo={item.referenceNo} status={item.status} dateCreated={item.dateCreated} />
+        
+        }
+        keyExtractor={item => item.listingId}
+      /> }
+
         <View style={styles.formContainer}>
           <Text style={styles.pageTitle}>Maintenance</Text>
           <Text style={styles.pageDescription}>Fill in the form below to send a report to our maintenance department about any problems in your rented BHC house </Text>

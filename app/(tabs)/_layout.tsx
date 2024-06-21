@@ -47,7 +47,7 @@ export default function TabLayout() {
         options={{
           title: 'Statements',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'money' : 'money-outline'} color={color} />
+            <TabBarIcon name={focused ? 'cash' : 'cash-outline'} color={color} />
           ),
         }}
       />
