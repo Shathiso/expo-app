@@ -11,13 +11,14 @@ import { FontAwesome } from '@expo/vector-icons';
 
 import { useDispatch } from "react-redux";
 import { setStoreApplications } from "@/store/store-slices/userSlice";
-import ReportItem from "../../components/ReportItem";
+import ApplicationItem from "../../components/ApplicationItem";
 import EmptyState from "@/components/EmptyState";
 
 import { useToast } from "react-native-toast-notifications";  
 
 
 import { submitHouseApplication, getUserApplications, storePayment } from '../../server/appWriteConfig.js'
+
 
 const applications = () => {
 
@@ -112,7 +113,7 @@ const applications = () => {
         {(applications.length > 0) && <FlatList
         data={applications}
         style={styles.flatList}
-        renderItem={({item}) => <View><ReportItem referenceNo={item.referenceNo} propertyType={item.houseType} /></View>}
+        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>

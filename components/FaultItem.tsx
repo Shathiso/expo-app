@@ -7,15 +7,15 @@ interface props{
     referenceNo:string
     dateCreated:string,
     status:string,
-    propertyType:string
+    faultType:string
 }
-const ReportItem = ({referenceNo, dateCreated, propertyType, status}:props) => {
+const FaultItem = ({referenceNo, dateCreated, faultType, status}:props) => {
   return (
     <View style={styles.table}>
         <View style={styles.detailsHeader}><Text style={styles.headerText}>Ref No.</Text>
-        <Text style={styles.headerText}>Property type</Text>
+        <Text style={styles.headerText}>Fault type</Text>
         <Text style={styles.headerText}>Status</Text></View>
-        <View style={styles.detailsContainer}><Text style={styles.tableText}>{referenceNo}</Text><Text>{propertyType}</Text><Text>Processing</Text></View>
+        <View style={styles.detailsContainer}><Text style={styles.tableText}>{referenceNo}</Text><Text>{faultType}</Text><Text>Processing</Text></View>
     </View>
   )
 }
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ReportItem;
+export default FaultItem;

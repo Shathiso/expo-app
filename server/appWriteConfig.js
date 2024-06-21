@@ -140,7 +140,6 @@ export async function getUserApplications() {
     );
 
     if (!applications) throw Error;
-    console.log('appli', applications.documents)
 
     return applications.documents;
   } catch (error) {
@@ -175,11 +174,29 @@ export async function getApplications() {
 export const submitFault =  async (form) => {
   try {
 
+      const currentAccount = await getAccount();
+      if (!currentAccount) throw Error;
+
+      //Get the last entered Applications reference Number
+      const faults = await getAllFaults();
+      const length = faults.documents.length;
+
+      let referenceNo;
+      (length > 0) ? referenceNo = (faults.documents[length - 1].referenceNo + 1) : referenceNo = 1;
+
+      const data = {
+        user: currentAccount.$id,
+        referenceNo:referenceNo,
+        ...form
+      }
+
+      console.log('application', data);
+
       const newFault = await databases.createDocument(
       config.databaseId,
       config.faultsCollectionId,
       ID.unique(),
-      { ...form }
+      { ...data }
       );
 
     return newFault;
@@ -190,8 +207,27 @@ export const submitFault =  async (form) => {
   }
 }
 
+export async function getAllFaults() {
+  try {
+    const currentAccount = await getAccount();
+    if (!currentAccount) throw Error;
 
-// Get Faults
+    const faults = await databases.listDocuments(
+      config.databaseId,
+      config.faultsCollectionId,
+      []
+    );
+
+    if (!faults) throw Error;
+
+    return faults.documents;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+// Get User Faults
 export async function getUserFaults() {
   try {
     const currentAccount = await getAccount();
@@ -205,7 +241,7 @@ export async function getUserFaults() {
 
     if (!faults) throw Error;
 
-    return faults;
+    return faults.documents;
   } catch (error) {
     console.log(error);
     return null;
@@ -216,7 +252,6 @@ export async function getUserFaults() {
 // Submit Fault complaint
 export const storePayment =  async (form) => {
   try {
-
       const payment = await databases.createDocument(
       config.databaseId,
       config.paymentsCollectionId,
@@ -232,7 +267,7 @@ export const storePayment =  async (form) => {
   }
 }
 
-// Get Faults
+// Get Property Payments
 export async function getPropertyPayments() {
   try {
     const currentAccount = await getAccount();
@@ -241,7 +276,7 @@ export async function getPropertyPayments() {
     const outStandingPayments = await databases.listDocuments(
       config.databaseId,
       config.propertyPaymentsCollectionId,
-      [Query.equal("userId", currentAccount.$id)] 
+      [Query.equal("user", currentAccount.$id)] 
     );
 
     if (!outStandingPayments) throw Error;
