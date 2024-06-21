@@ -47,10 +47,10 @@ export default function RootLayout() {
       duration={5000}
       animationType='slide-in'
       animationDuration={250}
-      textStyle={{ fontSize: 20 }}
+      textStyle={{ fontSize: 14 }}
       offset={50}
-      successColor="green"
-      normalColor="red"
+      successColor="#28a745"
+      normalColor="#007bff"
       offsetTop={30}
       offsetBottom={40}
       swipeEnabled={true}

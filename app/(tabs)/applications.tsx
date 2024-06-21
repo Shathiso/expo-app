@@ -12,6 +12,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useDispatch } from "react-redux";
 import { setStoreApplications } from "@/store/store-slices/userSlice";
 import ReportItem from "../../components/ReportItem";
+import EmptyState from "@/components/EmptyState";
 
 import { useToast } from "react-native-toast-notifications";  
 
@@ -31,7 +32,7 @@ const applications = () => {
   });
 
   const [paymentForm, setPaymentForm] = useState({
-    accountHolder:'',
+    accountHolder:"",
     accountNo:"",
     ccv:""
   });
@@ -43,7 +44,7 @@ const applications = () => {
   useEffect(() => {
     const retrievedApplications = getUserApplications();
     retrievedApplications.then((response) => {
-      setApplications([...response.documents])
+      setApplications([...response])
       console.log('applications', applications)
     })
   }, []);
@@ -65,7 +66,7 @@ const applications = () => {
 
   const storeApplication = async () => {
 
-    if (paymentForm.name === "" || paymentForm.accountNo === "") {
+    if (paymentForm.accountHolder === "" || paymentForm.accountNo === "") {
       Alert.alert("Error", "Please fill in all payment fields");
     }
 
@@ -87,7 +88,13 @@ const applications = () => {
 
   const clearForm = () => {
       setForm({
-
+        name:"",
+        postalAddress: "",
+        mobile:"",
+        email:"",
+        previousOwner:"",
+        houseType:"",
+        bedrooms:""
       });
 
       setPaymentForm({
@@ -104,14 +111,28 @@ const applications = () => {
 
         {(applications.length > 0) && <FlatList
         data={applications}
-        renderItem={({item}) => <ReportItem referenceNo={item.referenceNo} status={item.status} dateCreated={item.dateCreated} />
-        
-        }
+        style={styles.flatList}
+        renderItem={({item}) => <View><ReportItem referenceNo={item.referenceNo} propertyType={item.houseType} /></View>}
         keyExtractor={item => item.$id}
+        ListHeaderComponent={() => (
+          <View>
+            <View>
+                <Text style={styles.applicationTitle}>
+                  Your Applications
+                </Text>
+                <Text style={styles.applicationDescription}>
+                  This is a list of your previous applications.
+                </Text>
+            </View>
+          </View>
+        )}
+        ListEmptyComponent={() => (
+          <EmptyState title="No Applications" subtitle="You have not submitted any applications yet" />
+        )}
       /> }
 
-        <View style={styles.formContainer}>
-          <Text style={styles.pageTitle}>Applications</Text>
+         <View style={styles.formContainer}>
+          <Text style={styles.pageTitle}>New Application</Text>
           <Text style={styles.pageDescription}>We hope we can assist you in finding your new home. We ask that you provide your details below. </Text>
 
           <FormField label="Name" value={form.name} handleChangeText={(e:any) => setForm({ ...form, name: e })} placeholder="eg. Tshepo Modise"/>
@@ -123,6 +144,7 @@ const applications = () => {
           <DropDown dropDownTitle="Number of Bedrooms?" listData={bedroomOptions} handleSelection={(e:any) => setForm({ ...form, bedrooms: e })} />
           <CustomButton title="Apply" handlePress={makePayment} isLoading={signUpLoading} type="primarySingle" />
         </View>
+        
 
         <Modal 
         animationType="slide"
@@ -165,7 +187,10 @@ const applications = () => {
 
 const styles = StyleSheet.create({
   safeAreaView:{
-    height: '100%'
+    height: '100%',
+  },
+  flatList:{
+    flexGrow:0
   },
   pageTitle:{
     fontFamily:'Poppins-SemiBold',
@@ -176,6 +201,19 @@ const styles = StyleSheet.create({
     fontFamily:'Poppins-Regular',
     fontSize:14,
     textAlign:'left',
+    marginTop:10,
+    marginBottom: 16
+  },
+  applicationTitle:{
+    fontFamily:'Poppins-SemiBold',
+    fontSize:18,
+    marginTop:24,
+    textAlign:'center'
+  },
+  applicationDescription:{
+    fontFamily:'Poppins-Regular',
+    fontSize:14,
+    textAlign:'center',
     marginTop:10,
     marginBottom: 16
   },

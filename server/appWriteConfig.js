@@ -69,7 +69,6 @@ export const registerUser =  async (form) => {
 
         await signIn(form.email, form.password);
 
-        const user = '';
         const newUser = await databases.createDocument(
         config.databaseId,
         config.userCollectionId,
@@ -111,16 +110,16 @@ export const submitHouseApplication =  async (form) => {
         ...form
       }
 
-      console.log(data);
+      console.log('application', data);
 
-      /*const newApplication = await databases.createDocument(
+      const newApplication = await databases.createDocument(
       config.databaseId,
       config.applicationsCollectionId,
       ID.unique(),
       { ...data }
-      );*/
+      );
 
-    //return newApplication;
+    return newApplication;
       
   } catch (error) {
       console.log(error)
@@ -141,8 +140,9 @@ export async function getUserApplications() {
     );
 
     if (!applications) throw Error;
+    console.log('appli', applications.documents)
 
-    return applications;
+    return applications.documents;
   } catch (error) {
     console.log(error);
     return null;
@@ -192,7 +192,7 @@ export const submitFault =  async (form) => {
 
 
 // Get Faults
-export async function getFaults() {
+export async function getUserFaults() {
   try {
     const currentAccount = await getAccount();
     if (!currentAccount) throw Error;
@@ -200,7 +200,7 @@ export async function getFaults() {
     const faults = await databases.listDocuments(
       config.databaseId,
       config.faultsCollectionId,
-      [Query.equal("userId", currentAccount.$id)]
+      [Query.equal("user", currentAccount.$id)]
     );
 
     if (!faults) throw Error;
