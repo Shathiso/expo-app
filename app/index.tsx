@@ -2,8 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { Redirect, router } from "expo-router";
 import { Image, StyleSheet, Platform, View, Text } from 'react-native';
 import { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { setIsLoading } from "@/store/store-slices/userSlice";
+import { useGlobalContext } from "../store/globalProvider";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '@/components/CustomButton';
@@ -13,12 +12,10 @@ import Loader from "@/components/Loader";
 
 export default function Welcome() {
 
-  const dispatch = useDispatch();
-  const loading = useSelector((state:State) => state.userDetails.isLoading)
-  const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
+  const { isLoading, isLoggedIn } = useGlobalContext();
 
 
-  if (!loading && isLoggedIn) return <Redirect href="/home" />;
+  if (!isLoading && isLoggedIn) return <Redirect href="/home" />;
 
   const [signUpLoading,setSignUpLoading] = useState(false);
   const [loginLoading,setLoginLoading] = useState(false);
@@ -35,7 +32,7 @@ export default function Welcome() {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <Loader isLoading={loading} />
+      <Loader isLoading={isLoading} />
       <LogoHeader />
       
       <View style={styles.mainImageContainer}>

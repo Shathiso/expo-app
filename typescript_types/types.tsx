@@ -1,9 +1,9 @@
 export interface State{
     userDetails:{
-        user: {
+        user: [{
             username:string,
             avatar:string
-        },
+        }],
         isLoggedIn : boolean,
         isLoading: boolean
     }

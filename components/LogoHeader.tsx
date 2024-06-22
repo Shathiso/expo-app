@@ -1,10 +1,9 @@
-import { View, Text, StyleSheet, Image} from 'react-native'
-import { Link, router, Redirect } from "expo-router";
-import React, { useState } from 'react'
+import { View, StyleSheet, Image} from 'react-native'
+import { Link, useRootNavigationState, router } from "expo-router";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { logOut } from '@/store/store-slices/userSlice';
+import { useGlobalContext } from '../store/globalProvider';
 import { signOut } from '@/server/appWriteConfig';
+import { useEffect } from 'react';
 
 
 import { State } from '../typescript_types/types'
@@ -12,26 +11,33 @@ import CustomButton from './CustomButton';
 
 
 const LogoHeader = () => {
-  const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
-  const currentUser = useSelector((state:State) => state.userDetails.user)
-  const isLoading = useSelector((state:State) => state.userDetails.isLoading)
 
-  const dispatch = useDispatch();
+  const {isLoading, isLoggedIn, setIsLoading, setIsLoggedIn} = useGlobalContext();
+
+  const useNavigation = useRootNavigationState();
+  const currentRoute = useNavigation.routes[0].name;
+
+  useEffect(() => {
+console.log('header', isLoggedIn)
+  }, []);
+
 
   const signout = async () => {
     console.log('signing out')
+    setIsLoading(true);
     try {
       const signedOut = await signOut();
 
       if(signedOut){
-        dispatch(logOut());
+        setIsLoggedIn(false);
       }
       
     } catch (error) {
       console.log(error)
     }
     finally{
-      <Redirect href="/login" />
+      setIsLoading(false);
+      router.push('/login')
     }
  
   }
@@ -45,7 +51,7 @@ const LogoHeader = () => {
             />
       </Link>
       <View >
-        {(isLoggedIn && currentUser) && 
+        {(isLoggedIn  && currentRoute != 'index') && 
         <View style={styles.userSectionContainer}>
         <CustomButton type="signout" handlePress={signout} isLoading={isLoading} title="Sign Out"/>
         </View>
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
       display: 'flex',
       flexDirection:'row',
       zIndex:5,
-      marginTop:20,
+      marginTop:0,
       marginRight:10
     },
     logo:{

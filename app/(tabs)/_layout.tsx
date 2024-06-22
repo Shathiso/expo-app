@@ -5,12 +5,12 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import Loader from '@/components/Loader';
-import { UseSelector, useSelector } from 'react-redux';
+import { useGlobalContext } from "../../store/globalProvider";
 import { State } from '@/typescript_types/types';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const loading = useSelector((state:State) => state.userDetails.isLoading);
+  const {isLoading} = useGlobalContext();
 
   return (
     <>
@@ -38,9 +38,9 @@ export default function TabLayout() {
         }}
       />
         <Tabs.Screen
-        name="maintenance"
+        name="faults"
         options={{
-          title: 'Maintenance',
+          title: 'Faults',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'cog' : 'cog-outline'} color={color} />
           ),
@@ -68,7 +68,7 @@ export default function TabLayout() {
       />
     </Tabs>
 
-    <Loader isLoading={loading} />
+    <Loader isLoading={isLoading} />
     </>
   );
 }

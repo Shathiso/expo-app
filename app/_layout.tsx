@@ -7,10 +7,9 @@ import 'react-native-reanimated';
 import { StyleSheet, Text, View } from 'react-native'
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Provider } from 'react-redux';
+import GlobalProvider from "../store/globalProvider";
 import { ToastProvider } from 'react-native-toast-notifications'
 
-import store from '../store/globalStore';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -41,7 +40,7 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
+    <GlobalProvider>
       <ToastProvider
       placement="top"
       duration={5000}
@@ -72,7 +71,7 @@ export default function RootLayout() {
             </Stack>
         </ThemeProvider>
       </ToastProvider>
-    </Provider>
+    </GlobalProvider>
   );
 }
 

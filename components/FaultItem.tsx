@@ -12,19 +12,20 @@ interface props{
 const FaultItem = ({referenceNo, dateCreated, faultType, status}:props) => {
   return (
     <View style={styles.table}>
-        <View style={styles.detailsHeader}><Text style={styles.headerText}>Ref No.</Text>
-        <Text style={styles.headerText}>Fault type</Text>
-        <Text style={styles.headerText}>Status</Text></View>
-        <View style={styles.detailsContainer}><Text style={styles.tableText}>{referenceNo}</Text><Text>{faultType}</Text><Text>Processing</Text></View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.tableText}>{referenceNo}</Text>
+          <Text>{faultType}</Text>
+          <Text>{status}</Text>
+          <Text>{dateCreated}</Text>
+        </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   table:{
-    padding:20,
-  
-
+    paddingLeft:20,
+    paddingRight:20
   },
   detailsHeader:{
     flexDirection:"row",
@@ -45,9 +46,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer:{
     flex: 1,
-    padding: 20,
-    gap: 16,
-    marginBottom: 15,
+    padding: 8,
     flexDirection:'row',
     backgroundColor:'white',
     borderRadius:1

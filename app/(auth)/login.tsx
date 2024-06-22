@@ -8,13 +8,14 @@ import CustomButton from "@/components/CustomButton";
 import LogoHeader from "@/components/LogoHeader";
 
 import { useDispatch } from "react-redux";
-import { setIsLoggedIn, setUser, setIsLoading } from "@/store/store-slices/userSlice";
+import { useGlobalContext } from "../../store/globalProvider";
 
 import { getCurrentUser, signIn } from "@/server/appWriteConfig";
 
 
 const login = () => {
 
+  const { setIsLoading, setUser, setIsLoggedIn } = useGlobalContext();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -30,21 +31,22 @@ const login = () => {
 
 
     try {
+      setIsLoading(true);
+
       const signUp = await signIn(form.email, form.password);
-
       const result = await getCurrentUser();
-      dispatch(setIsLoading(true))
-      dispatch(setUser(result));
-      dispatch(setIsLoggedIn(true));
 
-
-      Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
+      if(result){
+        
+        setUser(result);
+        setIsLoggedIn(true);
+      }
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-      //
+      dispatch(setIsLoading(false));
+      router.replace("/home");
     }
   }
 

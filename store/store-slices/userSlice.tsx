@@ -2,29 +2,31 @@ import { createSlice } from '@reduxjs/toolkit'
 import { getCurrentUser } from '../../server/appWriteConfig';
 
 const initialState = {
-    user: {},
+    user: [],
     isLoggedIn:false,
     isLoading:false,
     applications: [],
     faults:[]
 };
 
-function getState() {
+const getState = async () => {
     let state = initialState;
-    getCurrentUser()
-      .then((res) => {
-        const newState = {  
-            user: {},
-            isLoggedIn:true,
-            isLoading:false
-        }
-        if(res != null) state = newState;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+    const user = await getCurrentUser();
 
-      return state;
+    if(user){
+        let newState = {  
+            user: [],
+            isLoggedIn:true,
+            isLoading:false,
+            applications: [],
+            faults:[]
+        }
+
+        newState.user.push(user);
+        state = newState;
+    }
+
+    return state;
 }
 
 export const userSlice = createSlice({
@@ -32,7 +34,7 @@ export const userSlice = createSlice({
     initialState: getState(),
     reducers: {
         setUser: (state, action) => {
-            state.user = action.payload;
+            state.user.push(action.payload);
         },
 
         setIsLoggedIn: (state, action) => {
@@ -52,7 +54,7 @@ export const userSlice = createSlice({
         },
 
         logOut: (state) => {
-            state.isLoading = true;
+            state.user = [];
             state.isLoggedIn = false;
         }
     }

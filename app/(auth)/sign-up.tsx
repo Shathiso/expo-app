@@ -7,23 +7,25 @@ import React from 'react'
 import CustomButton from "@/components/CustomButton";
 import LogoHeader from "@/components/LogoHeader";
 
-import { useDispatch } from "react-redux";
-import { setIsLoggedIn, setUser } from "@/store/store-slices/userSlice";
-
+import { useGlobalContext } from "../../store/globalProvider";
 import { registerUser } from '../../server/appWriteConfig.js'
 
 const signUp = () => {
 
+  
   const [form, setForm] = useState({
     username:"",
     email: "",
+    mobile: "",
     password: "",
   });
   const [signUpLoading, setSignUpLoading]= useState(false);
-  const dispatch = useDispatch();
 
   const submitForm = async () => {
     setSignUpLoading(true)
+
+    const { setIsLoading, setUser, setIsLoggedIn } = useGlobalContext();
+    
     if (form.username === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
       setSignUpLoading(false);
@@ -31,8 +33,8 @@ const signUp = () => {
 
     try {
       const result = await registerUser(form);
-      dispatch(setUser(result));
-      dispatch(setIsLoggedIn(true));
+      setUser(result);
+      setIsLoggedIn(true);
       router.replace("/home");
       
     } catch (error:any) {
@@ -52,6 +54,7 @@ const signUp = () => {
 
           <FormField label="Username" value={form.username} handleChangeText={(e:any) => setForm({ ...form, username: e })} placeholder="Username"/>
           <FormField label="Email" value={form.email} handleChangeText={(e:any) => setForm({ ...form, email: e })} placeholder="Email"/>
+          <FormField label="Mobile" value={form.email} handleChangeText={(e:any) => setForm({ ...form, mobile: e })} placeholder="Mobile"/>
           <FormField  label="Password" value={form.password} handleChangeText={(e:any) => setForm({ ...form, password: e })} placeholder="Password"/>
           <CustomButton title="Sign Up" handlePress={submitForm} isLoading={signUpLoading} type="primarySingle" />
           <View>

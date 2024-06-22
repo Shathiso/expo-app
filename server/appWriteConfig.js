@@ -77,6 +77,7 @@ export const registerUser =  async (form) => {
             accountId: newAccount.$id,
             email: form.email,
             username: form.username,
+            mobile: form.mobile,
             avatar: avatarUrl,
         }
         );
@@ -98,7 +99,9 @@ export const submitHouseApplication =  async (form) => {
 
       //Get the last entered Applications reference Number
       const applications = await getApplications();
-      const length = applications.documents.length;
+      let length;
+      (applications.length > 0) ? length = applications.documents.length : length = 0;
+
 
       let referenceNo;
       (length > 0) ? referenceNo = (applications.documents[length - 1].referenceNo + 1) : referenceNo = 1;
@@ -110,6 +113,7 @@ export const submitHouseApplication =  async (form) => {
         name:currentAccount.name,
         email:currentAccount.email,
         mobile:currentAccount.mobile,
+        dateCreated:Date.now(),
         ...form
       }
 
@@ -180,24 +184,29 @@ export const submitFault =  async (form) => {
       const currentAccount = await getAccount();
       if (!currentAccount) throw Error;
 
-      //Get the last entered Applications reference Number
+      const imageUrl = await uploadFile(form.image.file, "image")
+
+      //Get the last entered Fault reference Number
       const faults = await getAllFaults();
-      const length = faults.documents.length;
+
+      console.log('submit fault',faults);
+      let length;
+      (faults.length > 0) ? length = faults.length : length = 0;
 
       let referenceNo;
-      (length > 0) ? referenceNo = (faults.documents[length - 1].referenceNo + 1) : referenceNo = 1;
+      (length > 0) ? referenceNo = (faults[length - 1].referenceNo + 1) : referenceNo = 1;
 
       const data = {
         user: currentAccount.$id,
         name:currentAccount.name,
-        email:currentAccount.email,
-        mobile:currentAccount.mobile,
         status:'submitted',
         referenceNo:referenceNo,
-        ...form
+        image:imageUrl,
+        plotNumber:form.plotNumber,
+        description:form.description,
+        type:form.type,
+        dateCreated:Date.now(),
       }
-
-      console.log('application', data);
 
       const newFault = await databases.createDocument(
       config.databaseId,
@@ -211,7 +220,7 @@ export const submitFault =  async (form) => {
   } catch (error) {
       console.log(error)
       throw new Error(error)
-  }
+  } 
 }
 
 export async function getAllFaults() {
@@ -347,4 +356,54 @@ export async function signOut() {
     } catch (error) {
       throw new Error(error);
     }
+}
+
+
+// Upload File
+export async function uploadFile(file, type) {
+  if (!file) return;
+
+  //const { mimeType, ...rest } = file;
+  //const asset = { type: mimeType, ...rest };
+
+  try {
+    const uploadedFile = await storage.createFile(
+      config.storageId,
+      ID.unique(),
+      file
+    );
+
+    const fileUrl = await getFilePreview(uploadedFile.$id, type);
+    return fileUrl;
+  } catch (error) {
+    throw new Error(error);
   }
+}
+
+// Get File Preview
+export async function getFilePreview(fileId, type) {
+  let fileUrl;
+
+  try {
+    if (type === "video") {
+      //fileUrl = storage.getFileView(appwriteConfig.storageId, fileId);
+    } else if (type === "image") {
+      fileUrl = storage.getFilePreview(
+        config.storageId,
+        fileId,
+        2000,
+        2000,
+        "top",
+        100
+      );
+    } else {
+      throw new Error("Invalid file type");
+    }
+
+    if (!fileUrl) throw Error;
+
+    return fileUrl;
+  } catch (error) {
+    throw new Error(error);
+  }
+}

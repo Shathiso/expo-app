@@ -9,22 +9,21 @@ import CustomButton from '@/components/CustomButton';
 import LogoHeader from "@/components/LogoHeader";
 
 import { State } from '../../typescript_types/types'
-import { setIsLoading } from "@/store/store-slices/userSlice";
 import { useState } from "react";
 import { getListings } from "@/server/appWriteConfig";
 import ListingItem from "@/components/ListingItem";
 import EmptyState from "@/components/EmptyState";
+import { useGlobalContext } from "../../store/globalProvider";
 
 
 export default function HomeScreen() {
 
-  const dispatch = useDispatch();
   const [listings, setListings] = useState([]);
-  const isLoading = useSelector((state:State) => state.userDetails.isLoading)
+  const {isLoading, setIsLoading, isLoggedIn} = useGlobalContext();
 
 
   useEffect(() => {
-    dispatch(setIsLoading(true));
+    setIsLoading(true);
     const retrievedListings = getListings();
     retrievedListings.then((response) => {
       setListings([...response.documents])
@@ -32,11 +31,9 @@ export default function HomeScreen() {
       //if(listings.length > 0)
       console.log('listings',listings)
 
-    }).finally(()=> dispatch(setIsLoading(false)))
+    }).finally(()=> setIsLoading(false))
   }, []);
 
-  const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
-  const currentUser = useSelector((state:State) => state.userDetails.user)
 
   return (
     <SafeAreaView style={styles.safeAreaView}>

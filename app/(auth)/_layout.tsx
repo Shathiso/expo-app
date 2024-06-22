@@ -1,15 +1,15 @@
 import { Redirect, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useSelector } from "react-redux";
-import { State } from '../../typescript_types/types'
+import { State } from '../../typescript_types/types';
+import { useGlobalContext } from "../../store/globalProvider";
 
 import Loader from "../../components/Loader";
 //import { useGlobalContext } from "../../context/GlobalProvider";
 
 const AuthLayout = () => {
-  const loading = useSelector((state:State) => state.userDetails.isLoading)
-  const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
-  if (!loading && isLoggedIn) return <Redirect href="/home" />;
+  const { isLoading, isLoggedIn } = useGlobalContext();
+  if (!isLoading && isLoggedIn) return <Redirect href="/home" />;
 
   return (
     <>
@@ -28,7 +28,7 @@ const AuthLayout = () => {
         />
       </Stack>
 
-      <Loader isLoading={loading} />
+      <Loader isLoading={isLoading} />
       <StatusBar backgroundColor="#161622" style="dark" />
     </>
   );

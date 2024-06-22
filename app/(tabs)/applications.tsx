@@ -9,8 +9,7 @@ import LogoHeader from "@/components/LogoHeader";
 import DropDown from "@/components/DropDown";
 import { FontAwesome } from '@expo/vector-icons';
 
-import { useDispatch, useSelector } from "react-redux";
-import { setIsLoading } from "@/store/store-slices/userSlice";
+import { useGlobalContext } from "../../store/globalProvider";
 import ApplicationItem from "../../components/ApplicationItem";
 import EmptyState from "@/components/EmptyState";
 
@@ -37,21 +36,15 @@ const applications = () => {
   });
 
   const toast = useToast();
-  const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [applications, setApplications] = useState([]);
-  const isLoading = useSelector((state:State) => state.userDetails.isLoading)
+  const {isLoading, setIsLoading } = useGlobalContext()
 
   useEffect(() => {
-
-    dispatch(setIsLoading(true));
-    const retrievedApplications = getUserApplications();
-    
-    retrievedApplications.then((response) => {
-      setApplications([...response])
-      console.log('applications', applications)
-    }).finally(() => dispatch(setIsLoading(false)))
+    fetchData();
   }, []);
+
+
 
   const previousOwnerOptions = ['Yes', 'No'];
   const houseTypeOptions = ['Stand Alone', 'Town House', 'Flat/Apartment'];
@@ -59,12 +52,23 @@ const applications = () => {
 
   const [signUpLoading, setSignUpLoading]= useState(false);
 
+  const fetchData = async() => {
+    
+    setIsLoading(true);
+    const retrievedApplications = getUserApplications();
+    
+    retrievedApplications.then((response) => {
+      setApplications([...response])
+      console.log('applications', applications)
+    }).finally(() => setIsLoading(false))
+  }
+
   const makePayment = async () => {
     if (form.postalAddress === "" || form.houseType === "" || form.previousOwner === "") {
       Alert.alert("Error", "Please fill in all application fields");
     }
 
-    dispatch(setIsLoading(true));
+    setIsLoading(true);
     setModalVisible(true);
   }
 
@@ -82,12 +86,12 @@ const applications = () => {
       });
 
       clearForm();
-      dispatch(setIsLoading(false));
+      setIsLoading(false);
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-     
+      fetchData();
     }
   }
 
@@ -166,7 +170,7 @@ const applications = () => {
             <View style={styles.modalFormContainer}>
               <FormField style={styles.modalInput} label="Account Holder" value={paymentForm.accountHolder} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountHolder: e })} placeholder="eg. Tshepo Modise"/>
               <FormField style={styles.modalInput} label="Account Number" value={paymentForm.accountNo} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountNo: e })} placeholder="eg. 12345"/>
-              <FormField style={styles.modalInput} label="CCV" value={paymentForm.ccv} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, ccv: e })} placeholder="eg. 72812345"/>
+              <FormField style={styles.modalInput} label="CVC" value={paymentForm.ccv} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, ccv: e })} placeholder="eg. 72812345"/>
             </View>
             
             <Pressable
