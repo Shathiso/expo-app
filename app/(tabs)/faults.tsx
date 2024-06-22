@@ -121,9 +121,10 @@ const faults = () => {
                 </Text>
 
                 <View style={styles.detailsHeader}>
-                  <Text style={styles.headerText}>Ref No.</Text>
+                  <Text style={styles.headerRefText}>Ref No.</Text>
                   <Text style={styles.headerText}>Fault type</Text>
                   <Text style={styles.headerText}>Status</Text>
+                  <Text style={styles.headerText}>Date created</Text>
                 </View>
             </View>
           </View>
@@ -258,8 +259,23 @@ const styles = StyleSheet.create({
   },
   headerText:{
     color:'white',
-    padding:6
+    minWidth:100,
+    maxWidth:100,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
   },
+  headerRefText:{
+    color:'white',
+    marginLeft:10,
+    minWidth:30,
+    maxWidth:40,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
+  }
 
 });
 

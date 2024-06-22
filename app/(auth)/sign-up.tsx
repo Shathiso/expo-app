@@ -12,9 +12,9 @@ import { registerUser } from '../../server/appWriteConfig.js'
 
 const signUp = () => {
 
-  
+  const { setIsLoading, setUser, setIsLoggedIn } = useGlobalContext();
   const [form, setForm] = useState({
-    username:"",
+    name:"",
     email: "",
     mobile: "",
     password: "",
@@ -22,11 +22,10 @@ const signUp = () => {
   const [signUpLoading, setSignUpLoading]= useState(false);
 
   const submitForm = async () => {
-    setSignUpLoading(true)
+    setSignUpLoading(true);
+    setIsLoading(true);
 
-    const { setIsLoading, setUser, setIsLoggedIn } = useGlobalContext();
-    
-    if (form.username === "" || form.email === "" || form.password === "") {
+    if (form.name === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
       setSignUpLoading(false);
     }
@@ -40,8 +39,7 @@ const signUp = () => {
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-      //setSignUpLoading(false);
-      //setSubmitting(false);
+      setIsLoading(false);
     }
   }
 
@@ -52,9 +50,9 @@ const signUp = () => {
         <View style={styles.formContainer}>
           <Text style={styles.pageTitle}>Sign Up</Text>
 
-          <FormField label="Username" value={form.username} handleChangeText={(e:any) => setForm({ ...form, username: e })} placeholder="Username"/>
+          <FormField label="Name" value={form.name} handleChangeText={(e:any) => setForm({ ...form, name: e })} placeholder="Name"/>
           <FormField label="Email" value={form.email} handleChangeText={(e:any) => setForm({ ...form, email: e })} placeholder="Email"/>
-          <FormField label="Mobile" value={form.email} handleChangeText={(e:any) => setForm({ ...form, mobile: e })} placeholder="Mobile"/>
+          <FormField label="Mobile" value={form.mobile} handleChangeText={(e:any) => setForm({ ...form, mobile: e })} placeholder="Mobile"/>
           <FormField  label="Password" value={form.password} handleChangeText={(e:any) => setForm({ ...form, password: e })} placeholder="Password"/>
           <CustomButton title="Sign Up" handlePress={submitForm} isLoading={signUpLoading} type="primarySingle" />
           <View>

@@ -62,7 +62,9 @@ export async function getListings() {
 // Register User
 export const registerUser =  async (form) => {
     try {
-        const newAccount = await account.create(ID.unique(), form.email, form.password, form.username)
+
+        const username = form.name.split(" ")[0];
+        const newAccount = await account.create(ID.unique(), form.email, form.password, username)
         if (!newAccount) throw Error;
 
         const avatarUrl = avatars.getInitials(form.username);
@@ -76,7 +78,8 @@ export const registerUser =  async (form) => {
         {
             accountId: newAccount.$id,
             email: form.email,
-            username: form.username,
+            username: username,
+            name:form.name,
             mobile: form.mobile,
             avatar: avatarUrl,
         }
@@ -97,6 +100,10 @@ export const submitHouseApplication =  async (form) => {
       const currentAccount = await getAccount();
       if (!currentAccount) throw Error;
 
+      const userData = await getUserData(currentAccount.$id);
+
+      console.log('user data', userData);
+
       //Get the last entered Applications reference Number
       const applications = await getApplications();
       let length;
@@ -112,8 +119,8 @@ export const submitHouseApplication =  async (form) => {
         referenceNo:referenceNo,
         name:currentAccount.name,
         email:currentAccount.email,
-        mobile:currentAccount.mobile,
-        dateCreated:Date.now(),
+        mobile:userData.mobile,
+        dateCreated:new Date(),
         ...form
       }
 
@@ -155,6 +162,26 @@ export async function getUserApplications() {
   }
 }
 
+
+// Get user data
+export async function getUserData(id) {
+  try {
+
+    const userData = await databases.listDocuments(
+      config.databaseId,
+      config.userCollectionId,
+      [Query.equal("accountId", id)]
+    );
+
+    if (!userData) throw Error;
+
+    return userData.documents[0];
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 // Get house applications
 export async function getApplications() {
   try {
@@ -189,6 +216,7 @@ export const submitFault =  async (form) => {
       //Get the last entered Fault reference Number
       const faults = await getAllFaults();
 
+
       console.log('submit fault',faults);
       let length;
       (faults.length > 0) ? length = faults.length : length = 0;
@@ -205,7 +233,7 @@ export const submitFault =  async (form) => {
         plotNumber:form.plotNumber,
         description:form.description,
         type:form.type,
-        dateCreated:Date.now(),
+        dateCreated:new Date(),
       }
 
       const newFault = await databases.createDocument(

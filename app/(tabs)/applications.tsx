@@ -74,6 +74,8 @@ const applications = () => {
 
   const storeApplication = async () => {
 
+    setIsLoading(true);
+
     if (paymentForm.accountHolder === "" || paymentForm.accountNo === "") {
       Alert.alert("Error", "Please fill in all payment fields");
     }
@@ -86,11 +88,12 @@ const applications = () => {
       });
 
       clearForm();
-      setIsLoading(false);
+      
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
+      setIsLoading(false);
       fetchData();
     }
   }
@@ -118,17 +121,23 @@ const applications = () => {
         {(applications.length > 0 && !isLoading) && <FlatList
         data={applications}
         style={styles.flatList}
-        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} /></View>}
+        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} dateCreated={item.dateCreated} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>
-            <View>
+            <View style={styles.container}>
                 <Text style={styles.applicationTitle}>
                   Your Applications
                 </Text>
                 <Text style={styles.applicationDescription}>
                   This is a list of your previous applications.
                 </Text>
+                <View style={styles.detailsHeader}>
+                  <Text style={styles.headerRefText}>Ref No.</Text>
+                  <Text style={styles.headerText}>Type</Text>
+                  <Text style={styles.headerText}>Status</Text>
+                  <Text style={styles.headerText}>Date created</Text>
+                </View>
             </View>
           </View>
         )}
@@ -194,6 +203,11 @@ const styles = StyleSheet.create({
   },
   flatList:{
     flexGrow:0
+  },
+  container:{
+    flex:1,
+    paddingLeft:20,
+    paddingRight:20
   },
   pageTitle:{
     fontFamily:'Poppins-SemiBold',
@@ -292,6 +306,35 @@ const styles = StyleSheet.create({
     position:'absolute',
     top:5,
     right:5
+  },
+  detailsHeader:{
+    flexDirection:"row",
+    paddingBottom:10,
+    paddingTop:10,
+    backgroundColor: 'black',
+    color:'white',
+    fontFamily:'Poppins-SemiBold',
+    fontSize:18,
+    borderRadius:1
+  },
+  headerText:{
+    color:'white',
+    minWidth:100,
+    maxWidth:100,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
+  },
+  headerRefText:{
+    color:'white',
+    marginLeft:10,
+    minWidth:30,
+    maxWidth:40,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
   }
 
   

@@ -21,7 +21,6 @@ export default function Welcome() {
   const [loginLoading,setLoginLoading] = useState(false);
   const [age,setAge] = useState('');
 
-  const testDropDown = ['test','test1'];
   
   const login = () => {
     router.push('/login')

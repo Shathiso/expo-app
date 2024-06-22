@@ -12,19 +12,20 @@ interface props{
 const ApplicationItem = ({referenceNo, dateCreated, propertyType, status}:props) => {
   return (
     <View style={styles.table}>
-        <View style={styles.detailsHeader}><Text style={styles.headerText}>Ref No.</Text>
-        <Text style={styles.headerText}>Property type</Text>
-        <Text style={styles.headerText}>Status</Text></View>
-        <View style={styles.detailsContainer}><Text style={styles.tableText}>{referenceNo}</Text><Text>{propertyType}</Text><Text>Processing</Text></View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.tableTextRef}>{referenceNo}</Text>
+          <Text style={styles.tableText}>{propertyType}</Text>
+          <Text style={styles.tableText}>Processing</Text>
+          <Text style={styles.tableText}>{dateCreated}</Text>
+        </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   table:{
-    padding:20,
-  
-
+    paddingLeft:20,
+    paddingRight:20
   },
   detailsHeader:{
     flexDirection:"row",
@@ -41,13 +42,33 @@ const styles = StyleSheet.create({
     padding:6
   },
   tableText:{
-    minWidth:24
+    minWidth:100,
+    maxWidth:100,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
+  },
+  tableTextRef:{
+    marginLeft:5,
+    minWidth:40,
+    maxWidth:40,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
+  },
+  tableDate:{
+    minWidth:60,
+    maxWidth:40,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
   },
   detailsContainer:{
     flex: 1,
-    padding: 20,
-    gap: 16,
-    marginBottom: 15,
+    padding: 8,
     flexDirection:'row',
     backgroundColor:'white',
     borderRadius:1

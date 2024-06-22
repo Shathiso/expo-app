@@ -23,6 +23,7 @@ export default function HomeScreen() {
 
 
   useEffect(() => {
+
     setIsLoading(true);
     const retrievedListings = getListings();
     retrievedListings.then((response) => {

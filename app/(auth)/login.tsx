@@ -7,7 +7,6 @@ import React from 'react'
 import CustomButton from "@/components/CustomButton";
 import LogoHeader from "@/components/LogoHeader";
 
-import { useDispatch } from "react-redux";
 import { useGlobalContext } from "../../store/globalProvider";
 
 import { getCurrentUser, signIn } from "@/server/appWriteConfig";
@@ -20,8 +19,8 @@ const login = () => {
     email: "",
     password: "",
   });
+
   const [loginLoading, setLoginLoading]= useState(false);
-  const dispatch = useDispatch();
 
   const submitForm = async () => {
     if (form.email === "" || form.password === "") {
@@ -45,7 +44,7 @@ const login = () => {
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-      dispatch(setIsLoading(false));
+      setIsLoading(false);
       router.replace("/home");
     }
   }
