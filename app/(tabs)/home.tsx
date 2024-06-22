@@ -20,15 +20,19 @@ export default function HomeScreen() {
 
   const dispatch = useDispatch();
   const [listings, setListings] = useState([]);
+  const isLoading = useSelector((state:State) => state.userDetails.isLoading)
 
 
   useEffect(() => {
+    dispatch(setIsLoading(true));
     const retrievedListings = getListings();
     retrievedListings.then((response) => {
       setListings([...response.documents])
+
+      //if(listings.length > 0)
       console.log('listings',listings)
 
-    })
+    }).finally(()=> dispatch(setIsLoading(false)))
   }, []);
 
   const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
@@ -39,7 +43,7 @@ export default function HomeScreen() {
       <ScrollView>
         <LogoHeader  />
         <View>
-          <FlatList
+         {!isLoading && <FlatList
           data={listings}
           keyExtractor={(item) => item.$id}
           renderItem={({item}) => 
@@ -66,7 +70,7 @@ export default function HomeScreen() {
           ListEmptyComponent={() => (
             <EmptyState title="No Properties Found" subtitle="No properties listed yet" />
           )}
-          />
+          />}
         </View>
         <StatusBar backgroundColor="#161622" style="dark" />
       </ScrollView>

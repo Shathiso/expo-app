@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '@/components/CustomButton';
 import LogoHeader from "@/components/LogoHeader";
 import { State } from "@/typescript_types/types";
-import DropDown from "@/components/DropDown";
+import Loader from "@/components/Loader";
 
 export default function Welcome() {
 
@@ -35,6 +35,7 @@ export default function Welcome() {
   }
   return (
     <SafeAreaView style={styles.container}>
+      <Loader isLoading={loading} />
       <LogoHeader />
       
       <View style={styles.mainImageContainer}>

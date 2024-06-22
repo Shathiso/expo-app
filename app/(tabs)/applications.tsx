@@ -9,12 +9,13 @@ import LogoHeader from "@/components/LogoHeader";
 import DropDown from "@/components/DropDown";
 import { FontAwesome } from '@expo/vector-icons';
 
-import { useDispatch } from "react-redux";
-import { setStoreApplications } from "@/store/store-slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLoading } from "@/store/store-slices/userSlice";
 import ApplicationItem from "../../components/ApplicationItem";
 import EmptyState from "@/components/EmptyState";
 
-import { useToast } from "react-native-toast-notifications";  
+import { useToast } from "react-native-toast-notifications"; 
+import { State } from "@/typescript_types/types"; 
 
 
 import { submitHouseApplication, getUserApplications, storePayment } from '../../server/appWriteConfig.js'
@@ -23,10 +24,7 @@ import { submitHouseApplication, getUserApplications, storePayment } from '../..
 const applications = () => {
 
   const [form, setForm] = useState({
-    name:"",
     postalAddress: "",
-    mobile:"",
-    email:"",
     previousOwner:"",
     houseType:"",
     bedrooms:""
@@ -39,15 +37,20 @@ const applications = () => {
   });
 
   const toast = useToast();
+  const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [applications, setApplications] = useState([]);
+  const isLoading = useSelector((state:State) => state.userDetails.isLoading)
 
   useEffect(() => {
+
+    dispatch(setIsLoading(true));
     const retrievedApplications = getUserApplications();
+    
     retrievedApplications.then((response) => {
       setApplications([...response])
       console.log('applications', applications)
-    })
+    }).finally(() => dispatch(setIsLoading(false)))
   }, []);
 
   const previousOwnerOptions = ['Yes', 'No'];
@@ -55,13 +58,13 @@ const applications = () => {
   const bedroomOptions = ['1 bedroom', '2 bedroom', '3 bedroom'];
 
   const [signUpLoading, setSignUpLoading]= useState(false);
-  const dispatch = useDispatch();
 
   const makePayment = async () => {
-    if (form.name === "" || form.email === "" || form.previousOwner === "") {
+    if (form.postalAddress === "" || form.houseType === "" || form.previousOwner === "") {
       Alert.alert("Error", "Please fill in all application fields");
     }
 
+    dispatch(setIsLoading(true));
     setModalVisible(true);
   }
 
@@ -79,6 +82,7 @@ const applications = () => {
       });
 
       clearForm();
+      dispatch(setIsLoading(false));
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
@@ -89,10 +93,7 @@ const applications = () => {
 
   const clearForm = () => {
       setForm({
-        name:"",
         postalAddress: "",
-        mobile:"",
-        email:"",
         previousOwner:"",
         houseType:"",
         bedrooms:""
@@ -110,7 +111,7 @@ const applications = () => {
       <ScrollView>
         <LogoHeader />
 
-        {(applications.length > 0) && <FlatList
+        {(applications.length > 0 && !isLoading) && <FlatList
         data={applications}
         style={styles.flatList}
         renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} /></View>}
@@ -132,19 +133,16 @@ const applications = () => {
         )}
       /> }
 
-         <View style={styles.formContainer}>
+         { (!isLoading) &&<View style={styles.formContainer}>
           <Text style={styles.pageTitle}>New Application</Text>
-          <Text style={styles.pageDescription}>We hope we can assist you in finding your new home. We ask that you provide your details below. </Text>
+          <Text style={styles.pageDescription}>We hope we can assist you in finding your new home. We ask that you provide the details below. </Text>
 
-          <FormField label="Name" value={form.name} handleChangeText={(e:any) => setForm({ ...form, name: e })} placeholder="eg. Tshepo Modise"/>
           <FormField  label="Postal Address" value={form.postalAddress} handleChangeText={(e:any) => setForm({ ...form, postalAddress: e })} placeholder="eg PO Box 277 Tlokweng"/>
-          <FormField  label="Mobile Number" value={form.mobile} handleChangeText={(e:any) => setForm({ ...form, mobile: e })} placeholder="eg. 72812345"/>
-          <FormField  label="Email" value={form.email} handleChangeText={(e:any) => setForm({ ...form, email: e })} placeholder="eg. tshepo@gmail.com"/>
           <DropDown dropDownTitle="Previous Owner?" listData={previousOwnerOptions} handleSelection={(e:any) => setForm({ ...form, previousOwner: e })} />
           <DropDown dropDownTitle="House Type?" listData={houseTypeOptions} handleSelection={(e:any) => setForm({ ...form, houseType: e })} />
           <DropDown dropDownTitle="Number of Bedrooms?" listData={bedroomOptions} handleSelection={(e:any) => setForm({ ...form, bedrooms: e })} />
           <CustomButton title="Apply" handlePress={makePayment} isLoading={signUpLoading} type="primarySingle" />
-        </View>
+        </View> }
         
 
         <Modal 
@@ -207,7 +205,7 @@ const styles = StyleSheet.create({
   },
   applicationTitle:{
     fontFamily:'Poppins-SemiBold',
-    fontSize:18,
+    fontSize:24,
     marginTop:24,
     textAlign:'center'
   },

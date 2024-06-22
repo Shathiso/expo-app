@@ -11,41 +11,45 @@ import FaultItem from "@/components/FaultItem";
 
 import { useToast } from "react-native-toast-notifications";  
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setStoreFaults } from "@/store/store-slices/userSlice";
 import EmptyState from "@/components/EmptyState";
 import { submitFault, getUserFaults } from '../../server/appWriteConfig.js'
 
+import { State } from "@/typescript_types/types.js";
+import { setIsLoading } from "@/store/store-slices/userSlice";
+
 const maintenance = () => {
 
   const [form, setForm] = useState({
-    name:"",
     plotNumber: "",
-    mobile:"",
-    email:"",
-    typeOfProblem:"",
+    type:"",
     description:"",
     picture:''
   });
   const [faults, setFaults] = useState([]);
-
-  useEffect(() => {
-    const retrievedFaults = getUserFaults();
-    retrievedFaults.then((response) => {
-      setFaults([...response])
-      console.log(faults)
-    })
-  }, []);
-
-  const typeOfProblemOptions = ['plumbing', 'electrical', 'carpentry'];
-
+  const isLoading = useSelector((state:State) => state.userDetails.isLoading)
   const [signUpLoading, setSignUpLoading]= useState(false);
   const dispatch = useDispatch();
   const toast = useToast();
 
+  useEffect(() => {
+    dispatch(setIsLoading(true));
+    const retrievedFaults = getUserFaults();
+    retrievedFaults.then((response) => {
+      setFaults([...response])
+      console.log(faults)
+    }).finally(() => dispatch(setIsLoading(false)))
+  }, []);
+
+  const typeOfProblemOptions = ['plumbing', 'electrical', 'carpentry'];
+
+
+
   const submitForm = async () => {
     setSignUpLoading(true)
-    if (form.name === "" || form.email === "" || form.typeOfProblem === "") {
+    dispatch(setIsLoading(true));
+    if (form.plotNumber === "" || form.description === "" || form.typeOfProblem === "") {
       Alert.alert("Error", "Please fill in all fields");
     }
 
@@ -57,6 +61,7 @@ const maintenance = () => {
       });
 
       clearForm();
+      dispatch(setIsLoading(false));
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
@@ -67,11 +72,8 @@ const maintenance = () => {
 
   const clearForm = () => {
     setForm({
-      name:"",
       plotNumber: "",
-      mobile:"",
-      email:"",
-      typeOfProblem:"",
+      type:"",
       description:"",
       picture:''
     })
@@ -82,14 +84,14 @@ const maintenance = () => {
       <ScrollView>
         <LogoHeader />
 
-        {(faults.length > 0) && <FlatList
+        {(faults.length > 0 && !isLoading) && <FlatList
         data={faults}
         renderItem={({item}) => <View><FaultItem referenceNo={item.referenceNo} faultType={item.faultType} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>
             <View>
-                <Text style={styles.faultTitle}>
+                <Text style={styles.pageTitle}>
                   Your Reported Faults
                 </Text>
                 <Text style={styles.faultDescription}>
@@ -103,19 +105,16 @@ const maintenance = () => {
         )}
       /> }
 
-        <View style={styles.formContainer}>
+        {!isLoading && <View style={styles.formContainer}>
           <Text style={styles.pageTitle}>Maintenance</Text>
           <Text style={styles.pageDescription}>Fill in the form below to send a report to our maintenance department about any problems in your BHC house </Text>
 
-          <FormField label="Name" value={form.name} handleChangeText={(e:any) => setForm({ ...form, name: e })} placeholder="eg. Tshepo Modise"/>
           <FormField label="Plot Number" value={form.plotNumber} handleChangeText={(e:any) => setForm({ ...form, plotNumber: e })} placeholder="eg. Plot 234, Tlokweng"/>
-          <FormField  label="Mobile Number" value={form.mobile} handleChangeText={(e:any) => setForm({ ...form, mobile: e })} placeholder="eg. 72812345"/>
-          <FormField  label="Email" value={form.email} handleChangeText={(e:any) => setForm({ ...form, email: e })} placeholder="eg. tshepo@gmail.com"/>
-          <DropDown dropDownTitle="Type of problem?" listData={typeOfProblemOptions} handleSelection={(e:any) => setForm({ ...form, typeOfProblem: e })} />
+          <DropDown dropDownTitle="Type of problem?" listData={typeOfProblemOptions} handleSelection={(e:any) => setForm({ ...form, type: e })} />
           <FormField  label="Description" value={form.description} handleChangeText={(e:any) => setForm({ ...form, description: e })} placeholder="eg. Water Leak"/>
           <FormField  label="Picture" value={form.picture} handleChangeText={(e:any) => setForm({ ...form, picture: e })} placeholder=""/>  
           <CustomButton title="Submit" handlePress={submitForm} isLoading={signUpLoading} type="primarySingle" />
-        </View>
+        </View>}
       </ScrollView>
     </SafeAreaView>
   )

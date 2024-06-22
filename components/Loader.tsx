@@ -18,8 +18,9 @@ const Loader = ({ isLoading }: loader) => {
     >
       <ActivityIndicator
         animating={isLoading}
-        color="#fff"
-        size={osName === "ios" ? "large" : 50}
+        color="#ad2524"
+        size="large"
+        style={styles.spinner}
       />
     </View>
   );
@@ -28,14 +29,17 @@ const Loader = ({ isLoading }: loader) => {
 const styles = StyleSheet.create({
     loader:{
       height: screenHeight,
-      width: screenWidth,
+      width: "100%",
       position:'absolute',
       display:'flex',
       justifyContent:'center',
       zIndex:10,
-      opacity:0.7,
-      backgroundColor:"black"
+      opacity:1,
+      backgroundColor:"white"
     },
+    spinner:{
+      zIndex:11
+    }
 });
 
 export default Loader;

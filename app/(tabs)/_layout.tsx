@@ -4,11 +4,16 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Loader from '@/components/Loader';
+import { UseSelector, useSelector } from 'react-redux';
+import { State } from '@/typescript_types/types';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const loading = useSelector((state:State) => state.userDetails.isLoading);
 
   return (
+    <>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors['light'].tint,
@@ -62,5 +67,8 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+
+    <Loader isLoading={loading} />
+    </>
   );
 }

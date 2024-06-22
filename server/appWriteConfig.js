@@ -107,6 +107,9 @@ export const submitHouseApplication =  async (form) => {
         paid: true,
         user: currentAccount.$id,
         referenceNo:referenceNo,
+        name:currentAccount.name,
+        email:currentAccount.email,
+        mobile:currentAccount.mobile,
         ...form
       }
 
@@ -186,6 +189,10 @@ export const submitFault =  async (form) => {
 
       const data = {
         user: currentAccount.$id,
+        name:currentAccount.name,
+        email:currentAccount.email,
+        mobile:currentAccount.mobile,
+        status:'submitted',
         referenceNo:referenceNo,
         ...form
       }

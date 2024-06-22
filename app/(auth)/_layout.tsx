@@ -9,7 +9,7 @@ import Loader from "../../components/Loader";
 const AuthLayout = () => {
   const loading = useSelector((state:State) => state.userDetails.isLoading)
   const isLoggedIn = useSelector((state:State) => state.userDetails.isLoggedIn)
-  //if (!loading && isLogged) return <Redirect href="/home" />;
+  if (!loading && isLoggedIn) return <Redirect href="/home" />;
 
   return (
     <>
