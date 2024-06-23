@@ -15,6 +15,7 @@ import EmptyState from "@/components/EmptyState";
 
 import { useToast } from "react-native-toast-notifications"; 
 import { State } from "@/typescript_types/types"; 
+import { formatDate } from '@/utilities/utilityFunctions';
 
 
 import { submitHouseApplication, getUserApplications, storePayment } from '../../server/appWriteConfig.js'
@@ -121,7 +122,7 @@ const applications = () => {
         {(applications.length > 0 && !isLoading) && <FlatList
         data={applications}
         style={styles.flatList}
-        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} dateCreated={item.dateCreated} /></View>}
+        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} dateCreated={formatDate(item.dateCreated)} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>

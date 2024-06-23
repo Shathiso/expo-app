@@ -12,7 +12,8 @@ import StatementItem from '../../components/StatementItem';
 import EmptyState from '../../components/EmptyState';
 
 import { useGlobalContext } from '../../store/globalProvider';
-import { getUserPropertyPayments, getUserProperties, storePayment,  } from '../../server/appWriteConfig'
+import { getUserPropertyPayments, getUserProperties, storePropertyPayment  } from '../../server/appWriteConfig';
+import { formatDate } from '@/utilities/utilityFunctions';
 
 export default function Statements() {
 
@@ -38,16 +39,18 @@ export default function Statements() {
 
   const toast = useToast();
   const [modalVisible, setModalVisible] = useState(false);
+  const [paymentPropertyId, setPaymentPropertyId] = useState('');
   const [payments, setPayments] = useState([]);
   const [properties, setProperties] = useState([]);
   const [paymentForm, setPaymentForm] = useState({
+    amount: 0,
     accountHolder:"",
     accountNo:"",
     ccv:""
   });
 
   useEffect(() => {
-    const retrievedProperties = getUserPropertyPayments();
+    const retrievedProperties = getUserProperties();
     retrievedProperties.then((response) => {
       setProperties([...response])
     });
@@ -63,17 +66,34 @@ export default function Statements() {
       Alert.alert("Error", "Please fill in all fields");
     }
 
+    setIsLoading(true);
+
     try {
-      const result = await storePayment(paymentForm);
-      toast.show('Payment submitted successfully.',{
-        type: "success",
-      });
+      await storePropertyPayment(paymentForm, paymentPropertyId);
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
-
+      clearForm();
+      setIsLoading(false);
+      toast.show('Payment submitted successfully.',{
+        type: "success",
+      });
     }
+  }
+
+  const getTotal = (total) => {
+      const paymentsTotal = payments.reduce((accumulator,currentValue) => accumulator + currentValue.amount, 0)
+      return (parseInt(total) - paymentsTotal);
+  }
+
+  const clearForm = () => {
+   setPaymentForm({
+      amount: 0,
+      accountHolder:"",
+      accountNo:"",
+      ccv:""
+    })
   }
 
 
@@ -83,38 +103,50 @@ export default function Statements() {
         <LogoHeader />
         <View>
           { ((properties.length > 0) && !isLoading) ?
-            <View>
-              <FlatList
-                style={styles.flatList}
-                data={payments}
-                renderItem={({item}) => <View><StatementItem referenceNo={item.referenceNo} amount={item.amount} dateCreated={item.date} /></View>}
-                keyExtractor={item => item.$id}
-                ListHeaderComponent={() => (
-                  <View>
-                    <View style={styles.container}>
-                        <Text style={styles.pageTitle}>
-                          Statements
-                        </Text>
-                        <Text style={styles.pageDescription}>
-                          Below is a list of your statements.
-                        </Text>
+            properties.map((home) => 
+              <View key={home.$id}>
+                <FlatList
+                  style={styles.flatList}
+                  data={payments}
+                  renderItem={({item}) => <View><StatementItem referenceNo={item.referenceNo} amount={item.amount} dateCreated={formatDate(item.date)} /></View>}
+                  keyExtractor={item => item.$id}
+                  ListHeaderComponent={() => (
+                    <View>
+                      <View style={styles.container}>
+                          <Text style={styles.pageTitle}>
+                            Statements
+                          </Text>
+                          <Text style={styles.pageDescription}>
+                            Below is a list of your statements.
+                          </Text>
 
-                        <View style={styles.detailsHeader}>
-                          <Text style={styles.headerRefText}>Ref No.</Text>
-                          <Text style={styles.headerText}>Amount</Text>
-                          <Text style={styles.headerText}>Status</Text>
-                          <Text style={styles.headerText}>Date created</Text>
-                        </View>
+                          <View style={styles.detailsHeader}>
+                            <Text style={styles.headerRefText}>Ref No.</Text>
+                            <Text style={styles.headerText}>Amount</Text>
+                            <Text style={styles.headerText}>Date created</Text>
+                          </View>
+                      </View>
                     </View>
+                  )}
+                  ListEmptyComponent={() => (
+                    <EmptyState title="No Statements" subtitle="You have not made any payments" />
+                  )}
+                /> 
+                <Text style={styles.totalWrapper}>
+                  <View style={styles.totalWrapper}>
+                    <Text style={styles.totalLabel}>Total:</Text>
+                    <Text> {getTotal(home.price)}</Text>
                   </View>
-                )}
-                ListEmptyComponent={() => (
-                  <EmptyState title="No Statements" subtitle="You have not made any payments" />
-                )}
-              /> 
-              <Text>Total: {}</Text>
-          </View>
-          : ''
+
+                  <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => {setModalVisible(true); setPaymentPropertyId(home.$id)}}>
+                  <Text style={styles.textStyle}>Make Payment</Text>
+                </Pressable>
+                </Text>
+              </View>
+            )
+            : ''
           }
         </View>
 
@@ -137,6 +169,7 @@ export default function Statements() {
               <Text style={styles.modalSubtitle}>Please enter your banking details below to complete your payment.</Text>
               
               <View style={styles.modalFormContainer}>
+                <FormField style={styles.modalInput} label="Amount" value={paymentForm.amount} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, amount: e })} placeholder=""/>
                 <FormField style={styles.modalInput} label="Account Holder" value={paymentForm.accountHolder} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountHolder: e })} placeholder="eg. Tshepo Modise"/>
                 <FormField style={styles.modalInput} label="Account Number" value={paymentForm.accountNo} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountNo: e })} placeholder="eg. 12345"/>
                 <FormField style={styles.modalInput} label="CCV" value={paymentForm.ccv} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, ccv: e })} placeholder="eg. 72812345"/>
@@ -145,7 +178,7 @@ export default function Statements() {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => makePayment()}>
-                <Text style={styles.textStyle}>Make Payment</Text>
+                <Text style={styles.textStyle}>Pay</Text>
               </Pressable>
             </View>
           </View>
@@ -206,7 +239,8 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 10,
-    padding: 14,
+    padding: 10,
+    fontSize:14,
     elevation: 2,
   },
   buttonOpen: {
@@ -279,5 +313,18 @@ const styles = StyleSheet.create({
     display:"flex",
     justifyContent:"flex-start",
     alignItems:"center"
+  },
+  totalWrapper:{
+    display:"flex",
+    marginTop:15,
+    borderTopColor: "black",
+    fontSize:18,
+    flexDirection:"row",
+    justifyContent:"space-between",
+    paddingLeft:15,
+    paddingRight:20
+  },
+  totalLabel:{
+    fontFamily:'Poppins-SemiBold',
   }
 });

@@ -18,6 +18,7 @@ import { submitFault, getUserFaults } from '../../server/appWriteConfig.js'
 
 import { State } from "@/typescript_types/types.js";
 import { useGlobalContext } from "../../store/globalProvider";
+import { formatDate } from '@/utilities/utilityFunctions';
 
 const faults = () => {
 
@@ -108,7 +109,7 @@ const faults = () => {
         {(!isLoading && faults.length > 0) && <FlatList
         style={styles.flatList}
         data={faults}
-        renderItem={({item}) => <View><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={item.dateCreated} /></View>}
+        renderItem={({item}) => <View><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>

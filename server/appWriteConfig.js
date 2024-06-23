@@ -294,7 +294,7 @@ export async function getUserFaults() {
 }
 
 
-// Submit Fault complaint
+// Store payment
 export const storePayment =  async (form) => {
   try {
       const payment = await databases.createDocument(
@@ -458,3 +458,23 @@ export async function getUserPropertyPayments() {
   }
 }
 
+
+export const storePropertyPayment =  async (form, propertyId) => {
+  try {
+      const payment = await databases.createDocument(
+      config.databaseId,
+      config.propertyPaymentsCollectionId,
+      ID.unique(),
+      { 
+        propertId:propertyId,
+        ...form 
+      }
+      );
+
+    return payment;
+      
+  } catch (error) {
+      console.log(error)
+      throw new Error(error)
+  }
+}
