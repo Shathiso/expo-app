@@ -514,3 +514,26 @@ export const storePropertyPayment =  async (form, propertyId) => {
       throw new Error(error)
   }
 }
+
+
+// Get User Count
+export async function getUsersCount() {
+  try {
+    const currentAccount = await getAccount();
+    if (!currentAccount) throw Error;
+
+    const users = await databases.listDocuments(
+      config.databaseId,
+      config.userCollectionId,
+      []
+    );
+
+    if (!users) throw Error;
+
+    return users.documents.filter( user => !user.isAdmin);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+

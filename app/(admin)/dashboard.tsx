@@ -11,14 +11,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useToast } from "react-native-toast-notifications";  
 
 import EmptyState from "@/components/EmptyState";
-import { submitFault, getUserFaults } from '../../server/appWriteConfig.js'
+import { getUsersCount } from '../../server/appWriteConfig.js'
 
 import { useGlobalContext } from "../../store/globalProvider";
 
 const dashboard = () => {
 
   const {isLoading, setIsLoading} = useGlobalContext();
-  const [users, setUsers] = useState(0);
+  const [users, setUsers] = useState([]);
   const [applications, setApplications] = useState(0);
   const [listings, setListings] = useState(0);
   const toast = useToast();
@@ -30,10 +30,10 @@ const dashboard = () => {
 
   const fetchData = async() => {
     setIsLoading(true);
-    const retrievedFaults =  getUserFaults();
-    retrievedFaults.then((response) => {
-      //setUsers([...response])
-    }).finally(() => setIsLoading(false))
+    const retrievedUsers =  await getUsersCount();
+    
+    if(retrievedUsers) setUsers([...retrievedUsers]);
+    setIsLoading(false)
 
   }
 
@@ -52,7 +52,7 @@ const dashboard = () => {
             <View style={styles.statSectionWrapper}>
               <View style={styles.statsBox}>
                 <Text style={styles.statsTitle}>Users</Text>
-                <Text style={styles.statsDetails}>{users}</Text>
+                <Text style={styles.statsDetails}>{users.length}</Text>
               </View>
               <View style={styles.statsBox}>
                 <Text style={styles.statsTitle}>Applications</Text>
