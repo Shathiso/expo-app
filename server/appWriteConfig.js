@@ -20,7 +20,8 @@ import {
     listingsCollectionId:"66742be60030706d3387",
     paymentsCollectionId:"66742c3000284aa3012b",
     faultsCollectionId:"66742c6d00255fe1e5e0",
-    propertyPaymentsCollectionId:"667560710039c3f01526"
+    propertyPaymentsCollectionId:"667560710039c3f01526",
+    propertiesCollectionId:"6677e16d0038995c1811"
   };
 
 // Init your React Native SDK
@@ -311,27 +312,6 @@ export const storePayment =  async (form) => {
   }
 }
 
-// Get Property Payments
-export async function getPropertyPayments() {
-  try {
-    const currentAccount = await getAccount();
-    if (!currentAccount) throw Error;
-
-    const outStandingPayments = await databases.listDocuments(
-      config.databaseId,
-      config.propertyPaymentsCollectionId,
-      [Query.equal("user", currentAccount.$id)] 
-    );
-
-    if (!outStandingPayments) throw Error;
-
-    return outStandingPayments;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-}
-
 export async function signIn(email, password) {
     try {
       const session = await account.createEmailPasswordSession(email, password);
@@ -435,3 +415,46 @@ export async function getFilePreview(fileId, type) {
     throw new Error(error);
   }
 }
+
+// Get User owned properties
+export async function getUserProperties() {
+  try {
+    const currentAccount = await getAccount();
+    if (!currentAccount) throw Error;
+
+    const properties = await databases.listDocuments(
+      config.databaseId,
+      config.propertiesCollectionId,
+      [Query.equal("owner", currentAccount.$id)]
+    );
+
+    if (!properties) throw Error;
+
+    return properties.documents;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+// Get User property payments
+export async function getUserPropertyPayments() {
+  try {
+    const currentAccount = await getAccount();
+    if (!currentAccount) throw Error;
+
+    const payments = await databases.listDocuments(
+      config.databaseId,
+      config.propertyPaymentsCollectionId,
+      [Query.equal("owner", currentAccount.$id)]
+    );
+
+    if (!payments) throw Error;
+
+    return payments.documents;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+

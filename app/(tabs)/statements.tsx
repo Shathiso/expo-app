@@ -7,7 +7,12 @@ import { View, Text, ScrollView, StyleSheet, Alert, FlatList, Pressable, Modal }
 import LogoHeader from '@/components/LogoHeader';
 import { FontAwesome } from '@expo/vector-icons';
 import FormField from '@/components/FormField';
-import { getPropertyPayments, storePayment } from '../../server/appWriteConfig'
+
+import StatementItem from '../../components/StatementItem';
+import EmptyState from '../../components/EmptyState';
+
+import { useGlobalContext } from '../../store/globalProvider';
+import { getUserPropertyPayments, getUserProperties, storePayment,  } from '../../server/appWriteConfig'
 
 export default function Statements() {
 
@@ -29,10 +34,12 @@ export default function Statements() {
       download pdf of statement option
 
   */
+  const {setIsLoading, isLoading} = useGlobalContext();
 
   const toast = useToast();
   const [modalVisible, setModalVisible] = useState(false);
   const [payments, setPayments] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [paymentForm, setPaymentForm] = useState({
     accountHolder:"",
     accountNo:"",
@@ -40,11 +47,15 @@ export default function Statements() {
   });
 
   useEffect(() => {
-    const properties = getPropertyPayments();
-    properties.then((response) => {
-      setPayments([...response.documents])
-      console.log(payments)
-    })
+    const retrievedProperties = getUserPropertyPayments();
+    retrievedProperties.then((response) => {
+      setProperties([...response])
+    });
+
+    const propertyPayments = getUserPropertyPayments();
+    propertyPayments.then((response) => {
+      setPayments([...response])
+    });
   }, []);
 
   const makePayment = async () => {
@@ -71,43 +82,73 @@ export default function Statements() {
       <ScrollView>
         <LogoHeader />
         <View>
-          <Text style={styles.pageTitle}>Statements</Text>
-          <StatementsList data={payments}/>
+          { ((properties.length > 0) && !isLoading) ?
+            <View>
+              <FlatList
+                style={styles.flatList}
+                data={payments}
+                renderItem={({item}) => <View><StatementItem referenceNo={item.referenceNo} amount={item.amount} dateCreated={item.date} /></View>}
+                keyExtractor={item => item.$id}
+                ListHeaderComponent={() => (
+                  <View>
+                    <View style={styles.container}>
+                        <Text style={styles.pageTitle}>
+                          Statements
+                        </Text>
+                        <Text style={styles.pageDescription}>
+                          Below is a list of your statements.
+                        </Text>
 
-          <Text>Total: {}</Text>
+                        <View style={styles.detailsHeader}>
+                          <Text style={styles.headerRefText}>Ref No.</Text>
+                          <Text style={styles.headerText}>Amount</Text>
+                          <Text style={styles.headerText}>Status</Text>
+                          <Text style={styles.headerText}>Date created</Text>
+                        </View>
+                    </View>
+                  </View>
+                )}
+                ListEmptyComponent={() => (
+                  <EmptyState title="No Statements" subtitle="You have not made any payments" />
+                )}
+              /> 
+              <Text>Total: {}</Text>
+          </View>
+          : ''
+          }
         </View>
 
         <Modal 
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Payment completed, your application was submitted.');
-          setModalVisible(!modalVisible);
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Payment completed.');
+            setModalVisible(!modalVisible);
         }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable
-              style={[styles.button, styles.modalClose]}
-              onPress={() => setModalVisible(false)}>
-              <FontAwesome name="close" size={21} color="#000" />
-            </Pressable>
-            <Text style={styles.modalTitle}>Application Payment</Text>
-            <Text style={styles.modalSubtitle}>Please enter your banking details below to complete your application.</Text>
-            
-            <View style={styles.modalFormContainer}>
-              <FormField style={styles.modalInput} label="Account Holder" value={paymentForm.accountHolder} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountHolder: e })} placeholder="eg. Tshepo Modise"/>
-              <FormField style={styles.modalInput} label="Account Number" value={paymentForm.accountNo} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountNo: e })} placeholder="eg. 12345"/>
-              <FormField style={styles.modalInput} label="CCV" value={paymentForm.ccv} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, ccv: e })} placeholder="eg. 72812345"/>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable
+                style={[styles.button, styles.modalClose]}
+                onPress={() => setModalVisible(false)}>
+                <FontAwesome name="close" size={21} color="#000" />
+              </Pressable>
+              <Text style={styles.modalTitle}>Property Payment</Text>
+              <Text style={styles.modalSubtitle}>Please enter your banking details below to complete your payment.</Text>
+              
+              <View style={styles.modalFormContainer}>
+                <FormField style={styles.modalInput} label="Account Holder" value={paymentForm.accountHolder} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountHolder: e })} placeholder="eg. Tshepo Modise"/>
+                <FormField style={styles.modalInput} label="Account Number" value={paymentForm.accountNo} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, accountNo: e })} placeholder="eg. 12345"/>
+                <FormField style={styles.modalInput} label="CCV" value={paymentForm.ccv} handleChangeText={(e:any) => setPaymentForm({ ...paymentForm, ccv: e })} placeholder="eg. 72812345"/>
+              </View>
+              
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => makePayment()}>
+                <Text style={styles.textStyle}>Make Payment</Text>
+              </Pressable>
             </View>
-            
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => makePayment()}>
-              <Text style={styles.textStyle}>Make Payment</Text>
-            </Pressable>
           </View>
-        </View>
         </Modal>
       </ScrollView>
     </SafeAreaView>
@@ -121,7 +162,15 @@ const styles = StyleSheet.create({
   pageTitle:{
     fontFamily:'Poppins-SemiBold',
     fontSize:24,
-    textAlign:'center'
+    textAlign:'center',
+    marginTop:20,
+  },
+  pageDescription:{
+    fontFamily:'Poppins-Regular',
+    fontSize:14,
+    textAlign:'center',
+    marginTop:10,
+    marginBottom: 16
   },
   headerImage: {
     color: '#808080',
@@ -193,5 +242,42 @@ const styles = StyleSheet.create({
     position:'absolute',
     top:5,
     right:5
+  },
+  container:{
+    flex:1,
+    paddingLeft:20,
+    paddingRight:20
+  },
+  flatList:{
+    flexGrow:0
+  },
+  detailsHeader:{
+    flexDirection:"row",
+    paddingBottom:10,
+    paddingTop:10,
+    backgroundColor: 'black',
+    color:'white',
+    fontFamily:'Poppins-SemiBold',
+    fontSize:18,
+    borderRadius:1
+  },
+  headerText:{
+    color:'white',
+    minWidth:100,
+    maxWidth:100,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
+  },
+  headerRefText:{
+    color:'white',
+    marginLeft:10,
+    minWidth:30,
+    maxWidth:40,
+    overflow:"hidden",
+    display:"flex",
+    justifyContent:"flex-start",
+    alignItems:"center"
   }
 });
