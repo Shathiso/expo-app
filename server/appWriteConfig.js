@@ -354,6 +354,8 @@ export async function getCurrentUser() {
       return null;
     }
 }
+
+
   
 // Sign Out
 export async function signOut() {
@@ -458,16 +460,50 @@ export async function getUserPropertyPayments() {
   }
 }
 
+export const getAllPropertyPayments = async () => {
+  try {
+    const payments = await databases.listDocuments(
+      config.databaseId,
+      config.propertyPaymentsCollectionId,
+      []
+    );
+
+    if (!payments) throw Error;
+
+    return payments.documents;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 
 export const storePropertyPayment =  async (form, propertyId) => {
   try {
+
+    const currentAccount = await getAccount();
+    if (!currentAccount) throw Error;
+
+
+    //Get the last entered Fault reference Number
+    const payments = await getAllPropertyPayments();
+
+    let length;
+    (payments.length > 0) ? length = payments.length : length = 0;
+
+    let referenceNo;
+    (length > 0) ? referenceNo = (payments[length - 1].referenceNo + 1) : referenceNo = 1;
+
       const payment = await databases.createDocument(
       config.databaseId,
       config.propertyPaymentsCollectionId,
       ID.unique(),
       { 
-        propertId:propertyId,
-        ...form 
+        owner: currentAccount.$id,
+        date: new Date(),
+        propertyId:propertyId,
+        amount:form.amount,
+        referenceNo: referenceNo
       }
       );
 

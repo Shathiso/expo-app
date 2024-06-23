@@ -9,18 +9,19 @@ import LogoHeader from "@/components/LogoHeader";
 
 import { useGlobalContext } from "../../store/globalProvider";
 
-import { getCurrentUser, signIn } from "@/server/appWriteConfig";
+import { getCurrentUser, signIn, getUserData } from "@/server/appWriteConfig";
 
 
 const login = () => {
 
-  const { setIsLoading, setUser, setIsLoggedIn } = useGlobalContext();
+  const { setIsLoading, setUser, setIsLoggedIn, setIsAdmin, isAdmin } = useGlobalContext();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
   const [loginLoading, setLoginLoading]= useState(false);
+  const [currentUser, setCurrentUser]= useState(null);
 
   const submitForm = async () => {
     if (form.email === "" || form.password === "") {
@@ -34,18 +35,23 @@ const login = () => {
 
       const signUp = await signIn(form.email, form.password);
       const result = await getCurrentUser();
-
+    
       if(result){
         
         setUser(result);
         setIsLoggedIn(true);
+        if(result.isAdmin) {
+          setIsAdmin(true);
+        }
       }
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
     } finally {
       setIsLoading(false);
-      router.replace("/home");
+
+      console.log('login, isAdmin', isAdmin);
+      (!isAdmin) ? router.replace("/home") : router.replace("/dashboard");
     }
   }
 

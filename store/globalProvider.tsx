@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { getCurrentUser } from "../server/appWriteConfig";
+import { getCurrentUser, getUserData } from "../server/appWriteConfig";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -9,24 +9,26 @@ const GlobalProvider = ({ children }:any) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     getCurrentUser()
       .then((res) => {
         if (res) {
-            setIsLoggedIn(true);
+          setIsLoggedIn(true);
           setUser(res);
+          if(res.isAdmin) setIsAdmin(true)
+          
         } else {
-            setIsLoggedIn(false);
+          setIsLoggedIn(false);
           setUser(null);
         }
       })
       .catch((error) => {
         console.log(error);
+      }).finally(()=>{
+        setIsLoading(false)
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
   }, []);
 
   return (
@@ -37,7 +39,9 @@ const GlobalProvider = ({ children }:any) => {
         user,
         setUser,
         setIsLoading,
-        isLoading
+        isLoading,
+        isAdmin,
+        setIsAdmin
       }}
     >
       {children}
