@@ -221,8 +221,8 @@ const styles = StyleSheet.create({
   },
   headerText:{
     color:'white',
-    minWidth:100,
-    maxWidth:100,
+    minWidth:90,
+    maxWidth:90,
     overflow:"hidden",
     display:"flex",
     justifyContent:"center",
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   },
   headerRefText:{
     color:'white',
-    marginLeft:23,
+    marginLeft:5,
     minWidth:30,
     maxWidth:40,
     overflow:"hidden",

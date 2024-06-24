@@ -1,26 +1,14 @@
 import { View, StyleSheet, Image} from 'react-native'
-import { Link, useRootNavigationState, router } from "expo-router";
+import { Link, router } from "expo-router";
 
 import { useGlobalContext } from '../store/globalProvider';
 import { signOut } from '@/server/appWriteConfig';
-import { useEffect } from 'react';
-
-
-import { State } from '../typescript_types/types'
 import CustomButton from './CustomButton';
 
 
 const LogoHeader = () => {
 
   const {isLoading, isLoggedIn, setIsLoading, setIsLoggedIn} = useGlobalContext();
-
-  const useNavigation = useRootNavigationState();
-  const currentRoute = useNavigation.routes[0].name;
-
-  useEffect(() => {
-console.log('header', isLoggedIn, currentRoute)
-  }, []);
-
 
   const signout = async () => {
     console.log('signing out')
@@ -50,12 +38,10 @@ console.log('header', isLoggedIn, currentRoute)
             resizeMode='contain'
             />
       </Link>
-      <View >
-        {(isLoggedIn  && currentRoute != 'index') && <View style={styles.userSectionContainer}>
+      {(isLoggedIn) && <View style={styles.userSectionContainer}>
         <CustomButton type="signout" handlePress={signout} isLoading={isLoading} title="Sign Out"/>
         </View>
-        }
-      </View>
+      }
     </View>
   )
 }
@@ -63,16 +49,17 @@ console.log('header', isLoggedIn, currentRoute)
 const styles = StyleSheet.create({
     linkContainer:{
       flex:1,
-      maxWidth:100
+      maxWidth:100,
+      height:60
     },
     logoContainer:{
       display: 'flex',
       flexDirection:'row',
       justifyContent:'space-between',
       backgroundColor:'white',
-      width: 400,
-      maxHeight:60,
+      width: '100%',
       height: 60,
+      maxHeight:60,
       flex:1
     },
     userSectionContainer:{
@@ -84,7 +71,7 @@ const styles = StyleSheet.create({
     },
     logo:{
       width:100,
-      height:60
+      height:55
     },
     avatar:{
       width:40,

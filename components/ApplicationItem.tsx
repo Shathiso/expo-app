@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
     padding:6
   },
   tableText:{
-    minWidth:100,
-    maxWidth:100,
+    minWidth:85,
+    maxWidth:85,
     overflow:"hidden",
     display:"flex",
     justifyContent:"flex-start",

@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "package":"com.jsm.expo"
+      "package": "com.jsm.expo"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package":"com.jsm.expo"
+      "package": "com.jsm.expo"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +33,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ca0333a3-8e06-4fcd-a1e1-2b2bdd5de85a"
+      }
     }
   }
 }

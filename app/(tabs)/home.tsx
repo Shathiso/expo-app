@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '@/components/CustomButton';
 import LogoHeader from "@/components/LogoHeader";
 
-import { State } from '../../typescript_types/types'
+
 import { useState } from "react";
 import { getListings } from "@/server/appWriteConfig";
 import ListingItem from "@/components/ListingItem";
@@ -19,7 +19,7 @@ import { useGlobalContext } from "../../store/globalProvider";
 export default function HomeScreen() {
 
   const [listings, setListings] = useState([]);
-  const {isLoading, setIsLoading, isLoggedIn} = useGlobalContext();
+  const {isLoading, setIsLoading} = useGlobalContext();
 
 
   useEffect(() => {
@@ -28,9 +28,6 @@ export default function HomeScreen() {
     const retrievedListings = getListings();
     retrievedListings.then((response) => {
       setListings([...response.documents])
-
-      //if(listings.length > 0)
-      console.log('listings',listings)
 
     }).finally(()=> setIsLoading(false))
   }, []);

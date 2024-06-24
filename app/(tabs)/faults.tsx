@@ -77,13 +77,11 @@ const faults = () => {
 
     try {
       const result = await submitFault(form);
-      //dispatch(setStoreFaults(result));
       toast.show('Fault submitted successfully.. Expect to be assisted within the next 14 days.',{
         type: "success",
       });
 
       clearForm();
-      //dispatch(setIsLoading(false));
       
     } catch (error:any) {
       Alert.alert("Error", error.message);
@@ -109,7 +107,7 @@ const faults = () => {
         {(!isLoading && faults.length > 0) && <FlatList
         style={styles.flatList}
         data={faults}
-        renderItem={({item}) => <View><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
+        renderItem={({item}) => <View style={styles.tableRowWrapper}><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>
@@ -125,7 +123,7 @@ const faults = () => {
                   <Text style={styles.headerRefText}>Ref No.</Text>
                   <Text style={styles.headerText}>Fault type</Text>
                   <Text style={styles.headerText}>Status</Text>
-                  <Text style={styles.headerText}>Date created</Text>
+                  <Text style={styles.headerText}>Date </Text>
                 </View>
             </View>
           </View>
@@ -211,7 +209,8 @@ const styles = StyleSheet.create({
     paddingRight:20
   },
   flatList:{
-    flexGrow:0
+    flexGrow:0,
+    width:'100%'
   },
   linkWrapper:{
     textAlign:'center',
@@ -247,6 +246,11 @@ const styles = StyleSheet.create({
   },
   bottom:{
     height: 35
+  },
+
+  tableRowWrapper:{
+    marginLeft:20,
+    marginRight:20
   },
   detailsHeader:{
     flexDirection:"row",

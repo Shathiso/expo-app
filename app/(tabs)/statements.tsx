@@ -16,25 +16,6 @@ import { getUserPropertyPayments, getUserProperties, storePropertyPayment  } fro
 import { formatDate } from '@/utilities/utilityFunctions';
 
 export default function Statements() {
-
-  /*
-      list of payments, ( ToDo List )
-      pay option, which should update the total seen on the page and deduct from the total
-      Make Payment Button, which triggers a modal to pay, when they pay, the total reduces, and an entry is inserted into the list
-      Total : 8000 00
-
-      Payments
-      ####
-      ####
-      ####
-                         Total: #####
-                         Pay Now : (Button)
-
-      Payments database,
-      Type: application admin fee || rental/property,
-      download pdf of statement option
-
-  */
   const {setIsLoading, isLoading} = useGlobalContext();
 
   const toast = useToast();
@@ -50,6 +31,8 @@ export default function Statements() {
   });
 
   useEffect(() => {
+    setIsLoading(true);
+
     const retrievedProperties = getUserProperties();
     retrievedProperties.then((response) => {
       setProperties([...response])
@@ -58,6 +41,7 @@ export default function Statements() {
     const propertyPayments = getUserPropertyPayments();
     propertyPayments.then((response) => {
       setPayments([...response])
+      setIsLoading(false);
     });
   }, []);
 

@@ -24,8 +24,8 @@ const FaultItem = ({referenceNo, dateCreated, faultType, status}:props) => {
 
 const styles = StyleSheet.create({
   table:{
-    paddingLeft:20,
-    paddingRight:20
+    paddingLeft:0,
+    paddingRight:0
   },
   detailsContainer:{
     flex: 1,
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     borderRadius:1
   },
   tableText:{
-    minWidth:100,
-    maxWidth:100,
+    minWidth:90,
+    maxWidth:90,
     overflow:"hidden",
     display:"flex",
     justifyContent:"flex-start",

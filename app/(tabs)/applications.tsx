@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, StyleSheet, Alert, Modal, Pressable, FlatList } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Alert, Modal, Pressable, FlatList, TouchableOpacity } from 'react-native'
 import FormField from "@/components/FormField";
 import React from 'react'
 import CustomButton from "@/components/CustomButton";
@@ -16,6 +16,7 @@ import EmptyState from "@/components/EmptyState";
 import { useToast } from "react-native-toast-notifications"; 
 import { State } from "@/typescript_types/types"; 
 import { formatDate } from '@/utilities/utilityFunctions';
+import * as DocumentPicker from "expo-document-picker";
 
 
 import { submitHouseApplication, getUserApplications, storePayment } from '../../server/appWriteConfig.js'
@@ -27,7 +28,7 @@ const applications = () => {
     postalAddress: "",
     previousOwner:"",
     houseType:"",
-    bedrooms:""
+    bedrooms:"",
   });
 
   const [paymentForm, setPaymentForm] = useState({
@@ -39,19 +40,30 @@ const applications = () => {
   const toast = useToast();
   const [modalVisible, setModalVisible] = useState(false);
   const [applications, setApplications] = useState([]);
-  const {isLoading, setIsLoading } = useGlobalContext()
+  const {isLoading, setIsLoading } = useGlobalContext();
+  const [attachments, setAttachments] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
-
-
 
   const previousOwnerOptions = ['Yes', 'No'];
   const houseTypeOptions = ['Stand Alone', 'Town House', 'Flat/Apartment'];
   const bedroomOptions = ['1 bedroom', '2 bedroom', '3 bedroom'];
 
   const [signUpLoading, setSignUpLoading]= useState(false);
+
+  const openPicker = async (selectType:string) => {
+    //Simulating attaching files
+    const result = await DocumentPicker.getDocumentAsync({
+      type: ["image/png", "image/jpg"]
+    });
+
+    if (result) {
+      setAttachments(true);
+    };
+    
+  }
 
   const fetchData = async() => {
     
@@ -60,7 +72,7 @@ const applications = () => {
     
     retrievedApplications.then((response) => {
       setApplications([...response])
-      console.log('applications', applications)
+
     }).finally(() => setIsLoading(false))
   }
 
@@ -98,6 +110,7 @@ const applications = () => {
       fetchData();
     }
   }
+
 
   const clearForm = () => {
       setForm({
@@ -137,7 +150,7 @@ const applications = () => {
                   <Text style={styles.headerRefText}>Ref No.</Text>
                   <Text style={styles.headerText}>Type</Text>
                   <Text style={styles.headerText}>Status</Text>
-                  <Text style={styles.headerText}>Date created</Text>
+                  <Text style={styles.headerText}>Date</Text>
                 </View>
             </View>
           </View>
@@ -155,6 +168,30 @@ const applications = () => {
           <DropDown dropDownTitle="Previous Owner?" listData={previousOwnerOptions} handleSelection={(e:any) => setForm({ ...form, previousOwner: e })} />
           <DropDown dropDownTitle="House Type?" listData={houseTypeOptions} handleSelection={(e:any) => setForm({ ...form, houseType: e })} />
           <DropDown dropDownTitle="Number of Bedrooms?" listData={bedroomOptions} handleSelection={(e:any) => setForm({ ...form, bedrooms: e })} />
+          <TouchableOpacity onPress={() => openPicker("file")}>
+            {attachments ? (
+              <View>
+              <View><Text style={styles.uploaderTitle}>Upload Attachments</Text></View>
+              <View style={styles.imageUploader}>
+                <FontAwesome name="file" size={20} color="#000" />
+                <Text style={styles.chooseText}>
+                  Attachment Uploaded
+                </Text>
+              </View>
+            </View>
+              
+            ) : (
+              <View style={styles.uploadWrapper}>
+                <View><Text style={styles.uploaderTitle}>Upload Attachment</Text></View>
+                <View style={styles.imageUploader}>
+                  <FontAwesome name="upload" size={20} color="#000" style={styles.uploadIcon} />
+                  <Text style={styles.chooseText}>
+                    Choose a file
+                  </Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
           <CustomButton title="Apply" handlePress={makePayment} isLoading={signUpLoading} type="primarySingle" />
         </View> }
         
@@ -336,6 +373,25 @@ const styles = StyleSheet.create({
     display:"flex",
     justifyContent:"flex-start",
     alignItems:"center"
+  },
+  uploadWrapper:{
+    marginLeft:4
+  },
+  imageUploader:{
+    flexDirection:'row'
+  },
+  uploaderTitle:{
+    fontSize: 14,
+    marginTop:10
+  },
+  chooseText:{
+    marginTop:6,
+    marginLeft:6,
+    fontSize:14
+  },
+
+  uploadIcon:{
+    marginTop:6
   }
 
   

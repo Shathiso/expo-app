@@ -3,14 +3,13 @@ import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import Loader from '@/components/Loader';
 import { useGlobalContext } from "../../store/globalProvider";
-import { State } from '@/typescript_types/types';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const {isLoading} = useGlobalContext();
+
+  const { isLoading, isLoggedIn, isAdmin } = useGlobalContext();
+  if (!isLoading && isLoggedIn && isAdmin) return <Redirect href="/dashboard" />;
 
   return (
     <>
@@ -18,6 +17,13 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors['light'].tint,
         headerShown: false,
+        tabBarStyle: {
+          height: 55,
+        },
+        tabBarLabelStyle: {
+          fontSize:12,
+          marginBottom: 5,
+        },
       }}>
       <Tabs.Screen
         name="home"
@@ -60,7 +66,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="information"
         options={{
-          title: 'Information',
+          title: 'Info',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'information' : 'information-outline'} color={color} />
           ),

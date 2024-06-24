@@ -316,9 +316,9 @@ export async function signIn(email, password) {
     try {
       const session = await account.createEmailPasswordSession(email, password);
   
-      return session;
+      return {session:session, error:''};
     } catch (error) {
-      throw new Error(error);
+      return {session:'', error:error};
     }
 }
   
@@ -337,7 +337,7 @@ export async function getAccount() {
 export async function getCurrentUser() {
     try {
       const currentAccount = await getAccount();
-      console.log(currentAccount);
+
       if (!currentAccount) throw Error;
   
       const currentUser = await databases.listDocuments(

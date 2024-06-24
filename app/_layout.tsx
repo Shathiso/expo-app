@@ -49,7 +49,7 @@ export default function RootLayout() {
       textStyle={{ fontSize: 14 }}
       offset={50}
       successColor="#28a745"
-      normalColor="#007bff"
+      normalColor="red"
       offsetTop={30}
       offsetBottom={40}
       swipeEnabled={true}

@@ -8,50 +8,53 @@ import CustomButton from "@/components/CustomButton";
 import LogoHeader from "@/components/LogoHeader";
 
 import { useGlobalContext } from "../../store/globalProvider";
+import { useToast } from "react-native-toast-notifications";
 
 import { getCurrentUser, signIn } from "@/server/appWriteConfig";
 
 
 const login = () => {
 
+  const toast = useToast();
   const { setIsLoading, setUser, setIsLoggedIn, setIsAdmin, isAdmin } = useGlobalContext();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
-
+  
   const [loginLoading, setLoginLoading]= useState(false);
   const [currentUser, setCurrentUser]= useState(null);
 
   const submitForm = async () => {
     if (form.email === "" || form.password === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      toast.show('Please fill in all fields', {type: "error"});
       setLoginLoading(false);
-    }
 
+    } else {
 
-    try {
       setIsLoading(true);
 
-      const signUp = await signIn(form.email, form.password);
+      const signingIn = await signIn(form.email, form.password);
       const result = await getCurrentUser();
-    
-      if(result){
-        
+
+      if(signingIn.error != '') {
+        toast.show('Please check your login details.', {type: "error"});
+        setIsLoading(false);
+      }
+
+      if(result) {
         setUser(result);
+        setIsLoading(false);
         setIsLoggedIn(true);
+
         if(result.isAdmin) {
           setIsAdmin(true);
+          router.replace("/dashboard")
+        } else {
+          router.replace("/home")
         }
+        
       }
-      
-    } catch (error:any) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setIsLoading(false);
-
-      console.log('login, isAdmin', isAdmin);
-      (!isAdmin) ? router.replace("/home") : router.replace("/dashboard");
     }
   }
 
@@ -68,7 +71,7 @@ const login = () => {
           <CustomButton title="Login" handlePress={submitForm} isLoading={loginLoading} type="primarySingle" />
           <View>
             <Text style={styles.linkWrapper}>
-              Don't have an account? 
+              <Text>Don't have an account?</Text>
               <Link href="/sign-up" style={styles.link}>Sign up</Link>
             </Text>
 
@@ -95,10 +98,11 @@ const styles = StyleSheet.create({
   },
   linkWrapper:{
     textAlign:'center',
-    marginTop:10
+    marginTop:10,
+    flexDirection:"row"
   },
   link:{
-    marginLeft:2,
+    marginLeft:4,
     color:'#ad2524'
   }
 

@@ -17,7 +17,7 @@ const CustomButton = ({title, isLoading, type, handlePress}:props) => {
         style={ isLoading ? styles[`${type}Loading`] : styles[type]}
         disabled={isLoading}
     >
-        <View style={styles.buttonTextWrapper} >
+       <View style={styles.buttonTextWrapper} >
        <Text style={styles.text} >{title}</Text>
        {(type == 'signout') && <FontAwesome name="sign-out" size={24} color="#ad2524" />}
        </View>
