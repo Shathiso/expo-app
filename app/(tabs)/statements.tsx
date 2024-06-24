@@ -47,7 +47,7 @@ export default function Statements() {
 
   const makePayment = async () => {
     if (paymentForm.accountHolder === "" || paymentForm.accountNo === "" || paymentForm.ccv === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      toast.show("Please fill in all fields", {type: "error"});
     }
 
     setIsLoading(true);
@@ -139,7 +139,6 @@ export default function Statements() {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert('Payment completed.');
             setModalVisible(!modalVisible);
         }}>
           <View style={styles.centeredView}>

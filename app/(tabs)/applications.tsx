@@ -14,7 +14,6 @@ import ApplicationItem from "../../components/ApplicationItem";
 import EmptyState from "@/components/EmptyState";
 
 import { useToast } from "react-native-toast-notifications"; 
-import { State } from "@/typescript_types/types"; 
 import { formatDate } from '@/utilities/utilityFunctions';
 import * as DocumentPicker from "expo-document-picker";
 
@@ -77,12 +76,15 @@ const applications = () => {
   }
 
   const makePayment = async () => {
+    setIsLoading(true);
     if (form.postalAddress === "" || form.houseType === "" || form.previousOwner === "") {
-      Alert.alert("Error", "Please fill in all application fields");
+      toast.show('Please fill in all application fields', {type: "error"});
+      setIsLoading(false);
+    } else{
+      setIsLoading(false);
+      setModalVisible(true);
     }
 
-    setIsLoading(true);
-    setModalVisible(true);
   }
 
   const storeApplication = async () => {
@@ -90,7 +92,8 @@ const applications = () => {
     setIsLoading(true);
 
     if (paymentForm.accountHolder === "" || paymentForm.accountNo === "") {
-      Alert.alert("Error", "Please fill in all payment fields");
+      toast.show('Please fill in all payment fields', {type: "error"});
+      setIsLoading(false);
     }
 
     try {
@@ -104,7 +107,7 @@ const applications = () => {
       
       
     } catch (error:any) {
-      Alert.alert("Error", error.message);
+      toast.show(error.message, {type: "error"});
     } finally {
       setIsLoading(false);
       fetchData();

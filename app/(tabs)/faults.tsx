@@ -72,7 +72,8 @@ const faults = () => {
     setSignUpLoading(true)
     setIsLoading(true);
     if (form.plotNumber === "" || form.description === "" || form.type === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      toast.show("Please fill in all fields", {type: "error"});
+      setIsLoading(false);
     }
 
     try {
