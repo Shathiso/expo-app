@@ -27,10 +27,10 @@ const CustomButton = ({title, isLoading, type, handlePress}:props) => {
 
 const styles = StyleSheet.create({
     text:{
-        fontFamily:'Poppins-Medium',
+        fontFamily:'Poppins-SemiBold',
         textAlign:'center',
         marginRight:5,
-        marginTop:3.5
+        marginTop:3.5,
     },
     buttonTextWrapper:{
         display:'flex',
@@ -43,6 +43,14 @@ const styles = StyleSheet.create({
         paddingBottom:15,
         borderRadius: 12,
         textAlign:'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.40,
+        shadowRadius: 4,
+        elevation: 4
     },
 
     primarySingle:{

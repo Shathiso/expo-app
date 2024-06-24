@@ -44,12 +44,11 @@ export default function Welcome() {
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Welcome!</Text>
         <Text>
-          Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
+        Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
         </Text>
         <Text>
-          Botswana Housing Corporation is a parastatal under the Ministry of Transport and Public Works. 
+          Please sign up or login to our platform to view our available properties, apply for a property, submit a fault request, view statements and view general information about BHC house ownership.
         </Text>
-
         
       </View>
       <View style={styles.contentContainer}>
@@ -97,7 +96,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   title:{
-    fontSize:18
+    fontSize:22,
+    fontFamily:'Poppins-SemiBold',
   },
   text: {
     fontSize: 28,

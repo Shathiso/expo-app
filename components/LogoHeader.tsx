@@ -18,7 +18,7 @@ const LogoHeader = () => {
   const currentRoute = useNavigation.routes[0].name;
 
   useEffect(() => {
-console.log('header', isLoggedIn)
+console.log('header', isLoggedIn, currentRoute)
   }, []);
 
 
@@ -44,15 +44,14 @@ console.log('header', isLoggedIn)
 
   return (
     <View style={styles.logoContainer}>
-      <Link href="/home" style={styles.linkContainer}>
+      <Link href="/" style={styles.linkContainer}>
         <Image source={require('@/assets/images/logo.png')}
             style={styles.logo}
             resizeMode='contain'
             />
       </Link>
       <View >
-        {(isLoggedIn  && currentRoute != 'index') && 
-        <View style={styles.userSectionContainer}>
+        {(isLoggedIn  && currentRoute != 'index') && <View style={styles.userSectionContainer}>
         <CustomButton type="signout" handlePress={signout} isLoading={isLoading} title="Sign Out"/>
         </View>
         }

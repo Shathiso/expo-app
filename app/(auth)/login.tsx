@@ -9,7 +9,7 @@ import LogoHeader from "@/components/LogoHeader";
 
 import { useGlobalContext } from "../../store/globalProvider";
 
-import { getCurrentUser, signIn, getUserData } from "@/server/appWriteConfig";
+import { getCurrentUser, signIn } from "@/server/appWriteConfig";
 
 
 const login = () => {
