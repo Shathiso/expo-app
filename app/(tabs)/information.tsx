@@ -10,7 +10,10 @@ export default function Information() {
 
   return (
     <>
-      <LogoHeader />
+      <View style={styles.infoLogoContainer}>
+        <LogoHeader />
+      </View>
+      
       
       <ParallaxScrollView
       headerBackgroundColor={{ light: '#fff', dark: '#353636' }}
@@ -57,6 +60,10 @@ const styles = StyleSheet.create({
     fontSize:24,
     textAlign:'center',
     marginTop:20
+  },
+  infoLogoContainer:{
+    position:"relative",
+    marginTop:15
   },
   subTitle:{
     fontFamily:'Poppins-Regular',

@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     logo:{
       position:"relative",
       width:100,
-      height:45
+      height:45,
+      bottom:10
     },
     avatar:{
       width:40,
