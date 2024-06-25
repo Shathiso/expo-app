@@ -26,3 +26,21 @@ In the output, you'll find options to open the app in a
 ## Technology Stack
 
 - React Native, Expo Go and AppWrite as backend cloud service
+
+## Build Process
+
+- Open an expo go account: https://expo.dev
+- Login to your account
+- install eas cli: https://docs.expo.dev/eas-update/getting-started/
+
+   ```bash
+      npm install -g eas-cli
+   ```
+
+-  Run the build for the platform of your choice
+
+    ```bash
+      eas build -p android 
+      eas build -p ios 
+   ```
+- Download the platform executable files, extract them and publish the app to the appropriate app stores.
