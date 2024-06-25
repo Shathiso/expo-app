@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
       minHeight:60
     },
     logoContainer:{
+      position:"relative",
       display: 'flex',
       flexDirection:'row',
       justifyContent:'space-between',
@@ -71,8 +72,9 @@ const styles = StyleSheet.create({
       marginRight:10
     },
     logo:{
+      position:"relative",
       width:100,
-      height:55
+      height:45
     },
     avatar:{
       width:40,

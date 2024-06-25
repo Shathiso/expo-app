@@ -13,12 +13,11 @@ export default function Information() {
       <LogoHeader />
       
       <ParallaxScrollView
-      style={styles.parallaxScrollView}
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerBackgroundColor={{ light: '#fff', dark: '#353636' }}
       headerImage={<Image
         style={styles.mainImage}
         source={require('@/assets/images/slideshow/slide-2-resized.png')}
-        resizeMode='cover'
+        resizeMode='contain'
       />}>
         <View >
           <Text style={styles.pageTitle}>Information</Text>
