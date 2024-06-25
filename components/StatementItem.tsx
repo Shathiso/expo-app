@@ -13,7 +13,7 @@ const StatementItem = ({referenceNo, dateCreated, amount}:props) => {
     <View style={styles.table}>
         <View style={styles.detailsContainer}>
           <Text style={styles.tableTextRef}>{referenceNo}</Text>
-          <Text style={styles.tableText}>{amount}</Text>
+          <Text style={styles.tableText}>P{amount}</Text>
           <Text style={styles.tableText}>{dateCreated}</Text>
         </View>
     </View>

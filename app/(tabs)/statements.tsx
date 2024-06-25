@@ -31,6 +31,11 @@ export default function Statements() {
   });
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+
     setIsLoading(true);
 
     const retrievedProperties = getUserProperties();
@@ -43,27 +48,34 @@ export default function Statements() {
       setPayments([...response])
       setIsLoading(false);
     });
-  }, []);
+  }
 
   const makePayment = async () => {
-    if (paymentForm.accountHolder === "" || paymentForm.accountNo === "" || paymentForm.ccv === "") {
+    setIsLoading(true);
+    if (paymentForm.accountHolder === "" || paymentForm.accountNo == "" || paymentForm.ccv === "" || paymentForm.amount == 0) {
       toast.show("Please fill in all fields", {type: "error"});
+      setIsLoading(false);
     }
 
-    setIsLoading(true);
-
-    try {
-      await storePropertyPayment(paymentForm, paymentPropertyId);
-      
-    } catch (error:any) {
-      Alert.alert("Error", error.message);
-    } finally {
+    const paymentResponse =  await storePropertyPayment(paymentForm, paymentPropertyId);
+    
+    if(paymentResponse.success){
+      setModalVisible(false)
       clearForm();
       setIsLoading(false);
       toast.show('Payment submitted successfully.',{
         type: "success",
       });
+      fetchData();
+
+    }else{
+      setIsLoading(false);
+      toast.show('Payment Error.',{
+        type: "error",
+      });
+
     }
+
   }
 
   const getTotal = (total) => {
@@ -116,17 +128,29 @@ export default function Statements() {
                     <EmptyState title="No Statements" subtitle="You have not made any payments" />
                   )}
                 /> 
-                <Text style={styles.totalWrapper}>
-                  <View style={styles.totalWrapper}>
-                    <Text style={styles.totalLabel}>Total:</Text>
-                    <Text> {getTotal(home.price)}</Text>
+                <Text>
+
+                  <View style={styles.figuresSection}>
+                    <View style={styles.totalWrapper}>
+                      <Text style={styles.totalLabel}>Remaining:</Text>
+                      <Text>  P{getTotal(home.price)}</Text>
+                    </View>
+
+                    <View style={styles.totalWrapper}>
+                      <Text style={styles.totalLabel}>Total:</Text>
+                      <Text>  P{home.price}</Text>
+                    </View>
+
+                    <View>
+                      <Pressable
+                        style={[styles.button, styles.buttonPayment]}
+                        onPress={() => {setModalVisible(true); setPaymentPropertyId(home.$id)}}>
+                        <Text style={styles.textStyle}>Make Payment</Text>
+                      </Pressable>
+                    </View>
                   </View>
 
-                  <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => {setModalVisible(true); setPaymentPropertyId(home.$id)}}>
-                  <Text style={styles.textStyle}>Make Payment</Text>
-                </Pressable>
+           
                 </Text>
               </View>
             )
@@ -137,9 +161,10 @@ export default function Statements() {
         <Modal 
           animationType="slide"
           transparent={true}
+          style={styles.Modal}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setModalVisible(false);
         }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -194,6 +219,9 @@ const styles = StyleSheet.create({
     left: -35,
     position: 'absolute',
   },
+  Modal:{
+    zIndex:2
+  },
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
@@ -232,6 +260,10 @@ const styles = StyleSheet.create({
   buttonClose: {
     backgroundColor: '#2196F3',
     marginTop:10
+  },
+  buttonPayment:{
+    backgroundColor: '#2196F3',
+    marginTop:25
   },
   textStyle: {
     color: 'white',
@@ -303,11 +335,19 @@ const styles = StyleSheet.create({
     borderTopColor: "black",
     fontSize:18,
     flexDirection:"row",
-    justifyContent:"space-between",
+    justifyContent:"flex-end",
     paddingLeft:15,
     paddingRight:20
   },
   totalLabel:{
     fontFamily:'Poppins-SemiBold',
+    fontSize:16
+  },
+  figuresSection:{
+    width:"100%",
+    paddingLeft:20,
+    paddingRight:20,
+    display:"flex",
+    justifyContent:"flex-end"
   }
 });

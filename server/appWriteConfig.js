@@ -499,16 +499,15 @@ export const storePropertyPayment =  async (form, propertyId) => {
         owner: currentAccount.$id,
         date: new Date(),
         propertyId:propertyId,
-        amount:form.amount,
+        amount:parseInt(form.amount),
         referenceNo: referenceNo
       }
       );
 
-    return payment;
+    return {payment:payment, error:"", success:true};
       
   } catch (error) {
-      console.log(error)
-      throw new Error(error)
+    return {payment:'', error:error.message, success:false}; 
   }
 }
 
