@@ -51,6 +51,7 @@ const login = () => {
           setIsAdmin(true);
           router.replace("/dashboard")
         } else {
+          setIsAdmin(false);
           router.replace("/home")
         }
         

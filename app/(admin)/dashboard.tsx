@@ -102,7 +102,7 @@ const dashboard = () => {
                     </View>
                   )}
                   ListEmptyComponent={() => (
-                    <EmptyState title="No Reported Faults" subtitle="You have not submitted any faults" />
+                    <EmptyState title="No Reported Faults" subtitle="No submitted faults by tenants." />
                   )}
                 /> 
               </View>
