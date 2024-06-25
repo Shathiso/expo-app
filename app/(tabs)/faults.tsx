@@ -69,7 +69,6 @@ const faults = () => {
   };
 
   const submitForm = async () => {
-    setSignUpLoading(true)
     setIsLoading(true);
     if (form.plotNumber === "" || form.description === "" || form.type === "") {
       toast.show("Please fill in all fields", {type: "error"});
