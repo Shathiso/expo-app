@@ -48,9 +48,10 @@ const LogoHeader = () => {
 
 const styles = StyleSheet.create({
     linkContainer:{
-      flex:1,
+      position:"relative",
       maxWidth:100,
-      height:60
+      height:60,
+      minHeight:60
     },
     logoContainer:{
       display: 'flex',

@@ -13,6 +13,7 @@ export default function Information() {
       <LogoHeader />
       
       <ParallaxScrollView
+      style={styles.parallaxScrollView}
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
       headerImage={<Image
         style={styles.mainImage}
@@ -92,13 +93,13 @@ const styles = StyleSheet.create({
     flex:1,
     maxHeight:185,
   },
-
+  parallaxScrollView:{
+    position:"relative"
+  },
   mainImage:{
-    position:'absolute',
-    left:0,
-    top:0,
+    position:'relative',
     height: 185,
-    width:400
+    width:"100%"
   },
   contentContainer:{
     flex: 1,
