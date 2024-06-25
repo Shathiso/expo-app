@@ -103,16 +103,13 @@ export const submitHouseApplication =  async (form) => {
 
       const userData = await getUserData(currentAccount.$id);
 
-      console.log('user data', userData);
-
       //Get the last entered Applications reference Number
       const applications = await getApplications();
-      let length;
-      (applications.length > 0) ? length = applications.documents.length : length = 0;
-
-
-      let referenceNo;
-      (length > 0) ? referenceNo = (applications.documents[length - 1].referenceNo + 1) : referenceNo = 1;
+      let length = applications.documents.length;
+      let referenceNo = 1;
+      if(length > 0) {
+        referenceNo = (parseInt(applications.documents[length - 1].referenceNo) + 1);
+      } 
 
       const data = {
         paid: true,

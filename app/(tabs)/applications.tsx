@@ -47,7 +47,7 @@ const applications = () => {
   }, []);
 
   const previousOwnerOptions = ['Yes', 'No'];
-  const houseTypeOptions = ['Stand Alone', 'Town House', 'Flat/Apartment'];
+  const houseTypeOptions = ['Stand Alone', 'Town House', 'Apartment'];
   const bedroomOptions = ['1 bedroom', '2 bedroom', '3 bedroom'];
 
   const [signUpLoading, setSignUpLoading]= useState(false);
