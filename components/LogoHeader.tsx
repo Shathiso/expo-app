@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
       width: '100%',
       height: 60,
       maxHeight:60,
+      minHeight:60,
       flex:1
     },
     userSectionContainer:{
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
       position:"relative",
       width:100,
       height:45,
-      bottom:10
+      top:-10
     },
     avatar:{
       width:40,
