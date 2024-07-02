@@ -11,19 +11,18 @@ import { useGlobalContext } from "../../store/globalProvider";
 import { useToast } from "react-native-toast-notifications";
 
 import { getCurrentUser, signIn } from "@/server/appWriteConfig";
-
+import { globalContextTypes } from "@/typescript_types/types";
 
 const login = () => {
 
   const toast = useToast();
-  const { setIsLoading, setUser, setIsLoggedIn, setIsAdmin, isAdmin } = useGlobalContext();
+  const { setIsLoading, setUser, setIsLoggedIn, setIsAdmin }  = useGlobalContext();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   
   const [loginLoading, setLoginLoading]= useState(false);
-  const [currentUser, setCurrentUser]= useState(null);
 
   const submitForm = async () => {
     if (form.email === "" || form.password === "") {
@@ -43,7 +42,7 @@ const login = () => {
       }
 
       if(result) {
-        setUser(result);
+        setUser({...result});
         setIsLoading(false);
         setIsLoggedIn(true);
 
