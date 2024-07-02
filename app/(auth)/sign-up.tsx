@@ -12,7 +12,7 @@ import { registerUser } from '../../server/appWriteConfig.js'
 
 const signUp = () => {
 
-  const { setIsLoading, setUser, setIsLoggedIn } = useGlobalContext();
+  const { setIsLoading, setUser, setIsLoggedIn, setIsAdmin } = useGlobalContext();
   const [form, setForm] = useState({
     name:"",
     email: "",
@@ -33,6 +33,7 @@ const signUp = () => {
     try {
       const result = await registerUser(form);
       setUser(result);
+      setIsAdmin(false);
       setIsLoggedIn(true);
       router.replace("/home");
       

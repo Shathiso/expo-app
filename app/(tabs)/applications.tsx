@@ -38,9 +38,9 @@ const applications = () => {
 
   const toast = useToast();
   const [modalVisible, setModalVisible] = useState(false);
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState<any>([]);
   const {isLoading, setIsLoading } = useGlobalContext();
-  const [attachments, setAttachments] = useState(false);
+  const [attachments, setAttachments] = useState<any>(false);
 
   useEffect(() => {
     fetchData();
@@ -69,7 +69,7 @@ const applications = () => {
     setIsLoading(true);
     const retrievedApplications = getUserApplications();
     
-    retrievedApplications.then((response) => {
+    retrievedApplications.then((response:any) => {
       setApplications([...response])
 
     }).finally(() => setIsLoading(false))
@@ -138,7 +138,7 @@ const applications = () => {
         {(applications.length > 0 && !isLoading) && <FlatList
         data={applications}
         style={styles.flatList}
-        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} dateCreated={formatDate(item.dateCreated)} /></View>}
+        renderItem={({item}) => <View><ApplicationItem referenceNo={item.referenceNo} propertyType={item.houseType} status="Processing" dateCreated={formatDate(item.dateCreated)} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>

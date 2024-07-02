@@ -15,14 +15,23 @@ import { useGlobalContext } from '../../store/globalProvider';
 import { getUserPropertyPayments, getUserProperties, storePropertyPayment  } from '../../server/appWriteConfig';
 import { formatDate } from '@/utilities/utilityFunctions';
 
+type itemType = {
+    $id:string,
+    referenceNo: string,
+    type:string,
+    status:string,
+    dateCreated:string,
+    price:string
+}
+
 export default function Statements() {
   const {setIsLoading, isLoading} = useGlobalContext();
 
   const toast = useToast();
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentPropertyId, setPaymentPropertyId] = useState('');
-  const [payments, setPayments] = useState([]);
-  const [properties, setProperties] = useState([]);
+  const [payments, setPayments] = useState<any>([]);
+  const [properties, setProperties] = useState<any>([]);
   const [paymentForm, setPaymentForm] = useState({
     amount: 0,
     accountHolder:"",
@@ -39,12 +48,12 @@ export default function Statements() {
     setIsLoading(true);
 
     const retrievedProperties = getUserProperties();
-    retrievedProperties.then((response) => {
+    retrievedProperties.then((response:any) => {
       setProperties([...response])
     });
 
     const propertyPayments = getUserPropertyPayments();
-    propertyPayments.then((response) => {
+    propertyPayments.then((response:any) => {
       setPayments([...response])
       setIsLoading(false);
     });
@@ -78,8 +87,8 @@ export default function Statements() {
 
   }
 
-  const getTotal = (total) => {
-      const paymentsTotal = payments.reduce((accumulator,currentValue) => accumulator + currentValue.amount, 0)
+  const getTotal = (total:string) => {
+      const paymentsTotal = payments.reduce((accumulator:number,currentValue:{amount:number}) => accumulator + currentValue.amount, 0)
       return (parseInt(total) - paymentsTotal);
   }
 
@@ -99,7 +108,7 @@ export default function Statements() {
         <LogoHeader />
         <View>
           { ((properties.length > 0) && !isLoading) ?
-            properties.map((home) => 
+            properties.map((home:itemType) => 
               <View key={home.$id}>
                 <FlatList
                   style={styles.flatList}

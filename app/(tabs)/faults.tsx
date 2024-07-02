@@ -20,15 +20,32 @@ import { State } from "@/typescript_types/types.js";
 import { useGlobalContext } from "../../store/globalProvider";
 import { formatDate } from '@/utilities/utilityFunctions';
 
+type itemType = {
+  item:{
+    $id:string,
+    referenceNo: string,
+    type:string,
+    status:string,
+    dateCreated:string
+  }
+}
+
+type formType = {
+    plotNumber:string,
+    type:string,
+    description:string,
+    image: any | null
+}
+
 const faults = () => {
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<formType>({
     plotNumber: "",
     type:"",
     description:"",
     image:null
   });
-  const [faults, setFaults] = useState([]);
+  const [faults, setFaults] = useState<any>([]);
   const {isLoading, setIsLoading} = useGlobalContext();
   const [signUpLoading, setSignUpLoading]= useState(false);
   const toast = useToast();
@@ -41,7 +58,7 @@ const faults = () => {
   const fetchData = async() => {
     setIsLoading(true);
     const retrievedFaults = getUserFaults();
-    retrievedFaults.then((response) => {
+    retrievedFaults.then((response:any) => {
       setFaults([...response])
       console.log(faults)
     }).finally(() => setIsLoading(false))
@@ -107,7 +124,7 @@ const faults = () => {
         {(!isLoading && faults.length > 0) && <FlatList
         style={styles.flatList}
         data={faults}
-        renderItem={({item}) => <View style={styles.tableRowWrapper}><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
+        renderItem={({item}:itemType) => <View style={styles.tableRowWrapper}><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
         keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
           <View>

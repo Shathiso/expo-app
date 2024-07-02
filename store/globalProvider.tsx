@@ -1,13 +1,23 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { getCurrentUser, getUserData } from "../server/appWriteConfig";
+import { globalContextTypes } from "@/typescript_types/types";
 
-const GlobalContext = createContext();
+const GlobalContext = createContext<globalContextTypes>({
+  isLoggedIn: false,
+  setIsLoggedIn: () => {},
+  user: [],
+  setUser: () => {},
+  setIsLoading: () => {},
+  isLoading : false,
+  isAdmin: false,
+  setIsAdmin: () => {}
+});
 export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalProvider = ({ children }:any) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -16,12 +26,12 @@ const GlobalProvider = ({ children }:any) => {
       .then((res) => {
         if (res) {
           setIsLoggedIn(true);
-          setUser(res);
+          setUser({...res});
           if(res.isAdmin) setIsAdmin(true)
           
         } else {
           setIsLoggedIn(false);
-          setUser(null);
+          setUser([]);
         }
       })
       .catch((error) => {

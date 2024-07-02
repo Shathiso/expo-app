@@ -17,13 +17,24 @@ import { getUsersCount, getApplications, getListings, getAllFaults } from '../..
 
 import { useGlobalContext } from "../../store/globalProvider";
 
+
+type itemType = {
+  item:{
+    $id:string,
+    referenceNo: string,
+    type:string,
+    status:string,
+    dateCreated:string
+  }
+}
+
 const dashboard = () => {
 
   const {isLoading, setIsLoading} = useGlobalContext();
-  const [users, setUsers] = useState([]);
-  const [applications, setApplications] = useState([]);
-  const [listings, setListings] = useState([]);
-  const [faults, setFaults] = useState([]);
+  const [users, setUsers] = useState<any>([]);
+  const [applications, setApplications] = useState<any>([]);
+  const [listings, setListings] = useState<any>([]);
+  const [faults, setFaults] = useState<any>([]);
   const toast = useToast();
 
   useEffect(() => {
@@ -81,9 +92,8 @@ const dashboard = () => {
               <Text style={styles.sectionDescription}>Faults Section</Text>
               <View style={styles.detailsWrapper}>
                 <FlatList
-                  style={styles.flatList}
                   data={faults}
-                  renderItem={({item}) => <View><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
+                  renderItem={({item} : itemType) => <View><FaultItem referenceNo={item.referenceNo} faultType={item.type} status={item.status} dateCreated={formatDate(item.dateCreated)} /></View>}
                   keyExtractor={item => item.$id}
                   ListHeaderComponent={() => (
                     <View>

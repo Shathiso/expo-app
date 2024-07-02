@@ -15,7 +15,7 @@ const ApplicationItem = ({referenceNo, dateCreated, propertyType, status}:props)
         <View style={styles.detailsContainer}>
           <Text style={styles.tableTextRef}>{referenceNo}</Text>
           <Text style={styles.tableText}>{propertyType}</Text>
-          <Text style={styles.tableText}>Processing</Text>
+          <Text style={styles.tableText}>{status}</Text>
           <Text style={styles.tableText}>{dateCreated}</Text>
         </View>
     </View>

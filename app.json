@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "package": "com.jsm.expo"
+      "package": "com.jsm.expo",
+      "bundleIdentifier": "com.jsm.expo"
     },
     "android": {
       "adaptiveIcon": {

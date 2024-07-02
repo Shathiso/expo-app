@@ -18,7 +18,7 @@ import { useGlobalContext } from "../../store/globalProvider";
 
 export default function HomeScreen() {
 
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState<any>([]);
   const {isLoading, setIsLoading} = useGlobalContext();
 
 
@@ -26,7 +26,7 @@ export default function HomeScreen() {
 
     setIsLoading(true);
     const retrievedListings = getListings();
-    retrievedListings.then((response) => {
+    retrievedListings.then((response:any) => {
       setListings([...response.documents])
 
     }).finally(()=> setIsLoading(false))

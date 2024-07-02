@@ -1,13 +1,18 @@
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
+import { FontAwesome } from '@expo/vector-icons';
 
 interface props{
     label:string,
     placeholder:string,
-    value:string,
-    handleChangeText: () => void
+    value?:any,
+    style?: {} | null,
+    handleChangeText: (e:any) => void
 }
-const FormField = ({label, value, placeholder, handleChangeText}:props) => {
+const FormField = ({label, value, placeholder, style, handleChangeText}:props) => {
+
+const [showPassword, setShowPassword]= useState(true);
+
   return (
     <View>
         <Text style={styles.text} >{label}</Text>
@@ -17,7 +22,10 @@ const FormField = ({label, value, placeholder, handleChangeText}:props) => {
             onChangeText={handleChangeText}
             value={value}
             style={styles.input}
+            secureTextEntry={(placeholder == 'Password' && !showPassword)}
         />
+        { (placeholder == 'Password' && showPassword) && <FontAwesome name="eye" size={20} color="#000" style={styles.passwordEyeIcon} onClick={ () => setShowPassword(false)} />}
+        { (placeholder == 'Password' && !showPassword) &&<FontAwesome name="eye-slash" size={20} color="#000" style={styles.passwordEyeIcon} onClick={ () => setShowPassword(true)} />}
     </View>
   )
 }
@@ -54,6 +62,11 @@ const styles = StyleSheet.create({
         paddingLeft:15,
         borderStyle: 'solid',
         borderWidth: 1
+    },
+    passwordEyeIcon:{
+        position: 'absolute',
+        right:10,
+        bottom: 20
     }
 
 });
