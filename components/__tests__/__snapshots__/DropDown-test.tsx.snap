@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`drop down component renders correctly 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "flex": 1,
+      "justifyContent": "space-evenly",
+      "marginTop": 35,
+      "paddingBottom": 3,
+      "paddingTop": 3,
+      "paddingVertical": 100,
+    }
+  }
+>
+  <View
+    style={
+      {
+        "alignItems": "flex-start",
+        "height": 20,
+        "justifyContent": "flex-end",
+        "paddingBottom": 16,
+        "paddingLeft": 6,
+        "position": "absolute",
+        "top": 0,
+        "width": "100%",
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#151E26",
+          "fontSize": 14,
+          "paddingBottom": 4,
+        }
+      }
+    >
+      name
+    </Text>
+  </View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#E9ECEF",
+        "borderRadius": 12,
+        "flexDirection": "row",
+        "height": 50,
+        "justifyContent": "center",
+        "opacity": 1,
+        "paddingHorizontal": 12,
+        "width": "100%",
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#151E26",
+          "flex": 1,
+          "fontSize": 16,
+          "fontWeight": "500",
+        }
+      }
+    >
+      Select
+    </Text>
+    <Text />
+  </View>
+</View>
+`;

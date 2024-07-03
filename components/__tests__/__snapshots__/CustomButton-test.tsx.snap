@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom Button functions correctly 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "backgroundColor": "#faa21b",
+      "borderRadius": 12,
+      "elevation": 4,
+      "opacity": 1,
+      "paddingBottom": 15,
+      "paddingTop": 15,
+      "shadowColor": "#000",
+      "shadowOffset": {
+        "height": 2,
+        "width": 0,
+      },
+      "shadowOpacity": 0.4,
+      "shadowRadius": 4,
+      "textAlign": "center",
+    }
+  }
+>
+  <View
+    style={
+      {
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "fontFamily": "Poppins-SemiBold",
+          "marginRight": 5,
+          "marginTop": 3.5,
+          "textAlign": "center",
+        }
+      }
+    >
+      Test
+    </Text>
+  </View>
+</View>
+`;
