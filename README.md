@@ -1,5 +1,8 @@
-# Welcome to your Expo app 👋
-
+# Introduction
+This is a mobile application built using
+- React Native, Expo Go and AppWrite as backend cloud service
+  
+## Expo  
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
@@ -22,10 +25,6 @@ In the output, you'll find options to open the app in a
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
- 
-## Technology Stack
-
-- React Native, Expo Go and AppWrite as backend cloud service
 
 ## Build Process
 
